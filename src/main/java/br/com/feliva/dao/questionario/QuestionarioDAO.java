@@ -31,4 +31,12 @@ public class QuestionarioDAO extends InjectEntityManagerDAO<Questionario> {
             return null;
         }
     }
+
+    public List<Questionario> listAllQuestionarios(){
+        try {
+            return  this.em.createQuery("select q from Questionario q ").getResultList();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
 }

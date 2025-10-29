@@ -1,11 +1,11 @@
-export interface Questionario{
+export interface QuestionarioDTO{
     idQuestionario?: number;
     descricao?: string;
-    listaQuestao?: Questao[];
+    listaQuestao?: QuestaoDTO[];
     respostaQuestionario?:RespostaQuestionarioDTO;
 }
 
-export interface Questao{
+export interface QuestaoDTO{
     idQuestao?: number;
     tipoQuestao?: TipoQuestao;
     descricao?: string;

@@ -1,11 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { Questionario } from '../model';
+import { Component, OnInit, inject } from '@angular/core';
+import { QuestionarioDTO } from '../model';
 import { RouterLink } from '@angular/router';
+import { QuestionarioService } from '../questionario.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-questionarios',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, CommonModule],
   template: `
     <h2>Questionários</h2>
 
@@ -35,17 +37,12 @@ import { RouterLink } from '@angular/router';
   `]
 })
 export class QuestionariosComponent implements OnInit {
-  questionarios: Questionario[] = [];
-
-  // Injetar um serviço para buscar os questionários
-  constructor() { }
+  questionarios: QuestionarioDTO[] = [];
+  private questionarioService = inject(QuestionarioService);
 
   ngOnInit(): void {
-    // Lógica para carregar os questionários - por enquanto, usaremos dados mocados
-    this.questionarios = [
-      { idQuestionario: 1, descricao: 'Questionário de Matemática' },
-      { idQuestionario: 2, descricao: 'Questionário de Português' },
-      { idQuestionario: 3, descricao: 'Questionário de História' }
-    ];
+    this.questionarioService.getAllQuestionarios().subscribe(data => {
+      this.questionarios = data;
+    });
   }
 }

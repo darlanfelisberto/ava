@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Questionario } from '../model';
+import { QuestionarioDTO } from '../model';
 
 @Component({
   selector: 'app-questionario',
@@ -38,5 +38,5 @@ import { Questionario } from '../model';
   `
 })
 export class QuestionarioComponent {
-  @Input() questionario: Questionario | undefined;
+  @Input() questionario: QuestionarioDTO | undefined;
 }

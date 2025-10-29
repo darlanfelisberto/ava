@@ -57,3 +57,6 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+
+http://localhost:8080/ava/auth/realms/auth/auth?response_type=code&client_id=ava&redirect_uri=http:localhost:4200/ava&state=3c971b36-0c43-4119-81d9-e61283724c8c&scope=openid
