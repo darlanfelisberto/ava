@@ -15,7 +15,11 @@ import { RespostaService } from '../services/resposta.service';
       <h2>{{ questionario.descricao }}</h2>
 
       @for (questao of questionario.listaQuestao; track questao.idQuestao) {
-        <app-questao [questao]="questao" [respostaQuestao]="getRespostaParaQuestao(questao.idQuestao)"></app-questao>
+        <app-questao
+          [questao]="questao"
+          [respostaQuestao]="getRespostaParaQuestao(questao.idQuestao)"
+          (respostaQuestaoChange)="onRespostaQuestaoChange($event)">
+        </app-questao>
       }
     }
   `,
@@ -53,5 +57,11 @@ export class QuestionarioComponent implements OnInit {
     return this.questionario.respostaQuestionario.listaRespostaQuestao.find(
       resposta => resposta.idQuestao === idQuestao
     );
+  }
+
+  onRespostaQuestaoChange(event: {idQuestao?: number, idAlternativa?: number, texto?: string, selecionada: boolean}) {
+    console.log('Resposta recebida no QuestionarioComponent:', event);
+    // Aqui você adicionaria a lógica para atualizar o objeto this.questionario.respostaQuestionario
+    // com base no evento recebido.
   }
 }
