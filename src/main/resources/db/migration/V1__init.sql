@@ -1,0 +1,2189 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 17.5 (Ubuntu 17.5-0ubuntu0.25.04.1)
+-- Dumped by pg_dump version 17.5 (Ubuntu 17.5-0ubuntu0.25.04.1)
+
+-- Started on 2025-09-02 10:21:11 -03
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 10 (class 2615 OID 18573)
+-- Name: auth; Type: SCHEMA; Schema: -; Owner: -
+--
+
+CREATE SCHEMA auth;
+
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- TOC entry 257 (class 1259 OID 18574)
+-- Name: auth_login; Type: TABLE; Schema: auth; Owner: -
+--
+
+CREATE TABLE auth.auth_login (
+                                 auth_login_id uuid NOT NULL,
+                                 code uuid,
+                                 nonce character varying(255),
+                                 state uuid,
+                                 usado boolean NOT NULL,
+                                 valido_ate timestamp(6) without time zone,
+                                 auth_user_id uuid,
+                                 cliente_id uuid
+);
+
+
+--
+-- TOC entry 258 (class 1259 OID 18579)
+-- Name: auth_user; Type: TABLE; Schema: auth; Owner: -
+--
+
+CREATE TABLE auth.auth_user (
+                                auth_user_id uuid NOT NULL,
+                                email character varying(255) NOT NULL,
+                                inativo boolean NOT NULL,
+                                password character varying(255) NOT NULL,
+                                salt character varying(255) NOT NULL,
+                                username character varying(30) NOT NULL
+);
+
+
+--
+-- TOC entry 259 (class 1259 OID 18586)
+-- Name: auth_user_permissao; Type: TABLE; Schema: auth; Owner: -
+--
+
+CREATE TABLE auth.auth_user_permissao (
+                                          auth_user_id uuid NOT NULL,
+                                          permissao_id uuid NOT NULL
+);
+
+
+--
+-- TOC entry 260 (class 1259 OID 18591)
+-- Name: cliente; Type: TABLE; Schema: auth; Owner: -
+--
+
+CREATE TABLE auth.cliente (
+                              cliente_id uuid NOT NULL,
+                              cliente_url character varying(255),
+                              nome character varying(255),
+                              redirecionamento character varying(255),
+                              response_type character varying(255),
+                              secret character varying(255),
+                              CONSTRAINT cliente_response_type_check CHECK (((response_type)::text = ANY ((ARRAY['CODE'::character varying, 'TOKEN'::character varying])::text[])))
+);
+
+
+--
+-- TOC entry 263 (class 1259 OID 18638)
+-- Name: fluxo; Type: TABLE; Schema: auth; Owner: -
+--
+
+CREATE TABLE auth.fluxo (
+                            fluxo_id uuid DEFAULT gen_random_uuid() NOT NULL,
+                            response_type character varying(100) NOT NULL,
+                            client_id character varying(50) NOT NULL,
+                            redirect_uri character varying(200),
+                            state character varying(100),
+                            scope character varying(50),
+                            dt_create timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+                            nonce character varying(100)
+);
+
+
+--
+-- TOC entry 261 (class 1259 OID 18599)
+-- Name: permissao; Type: TABLE; Schema: auth; Owner: -
+--
+
+CREATE TABLE auth.permissao (
+                                permissao_id uuid NOT NULL,
+                                nome character varying(255)
+);
+
+
+--
+-- TOC entry 262 (class 1259 OID 18604)
+-- Name: pessoas; Type: TABLE; Schema: auth; Owner: -
+--
+
+CREATE TABLE auth.pessoas (
+                              pessoa_id uuid NOT NULL,
+                              cpf character varying(255) NOT NULL,
+                              dt_nasc date NOT NULL,
+                              nome character varying(255) NOT NULL,
+                              tenantid character varying(255),
+                              auth_user_id uuid NOT NULL
+);
+
+
+--
+-- TOC entry 224 (class 1259 OID 18258)
+-- Name: armazenagem; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.armazenagem (
+                                    id_armazenagem integer NOT NULL,
+                                    nome character varying(100),
+                                    descricao character varying(200)
+);
+
+
+--
+-- TOC entry 223 (class 1259 OID 18257)
+-- Name: armazenagem_id_armazenagem_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+ALTER TABLE public.armazenagem ALTER COLUMN id_armazenagem ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.armazenagem_id_armazenagem_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 266 (class 1259 OID 18962)
+-- Name: categoria; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.categoria (
+                                  id_categoria integer NOT NULL,
+                                  nome character varying(100),
+                                  descricao character varying(200)
+);
+
+
+--
+-- TOC entry 265 (class 1259 OID 18961)
+-- Name: categoria_id_categoria_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+ALTER TABLE public.categoria ALTER COLUMN id_categoria ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.categoria_id_categoria_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 226 (class 1259 OID 18270)
+-- Name: cidade; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.cidade (
+                               id_cidade integer NOT NULL,
+                               id_estado integer,
+                               nome character varying(100)
+);
+
+
+--
+-- TOC entry 225 (class 1259 OID 18269)
+-- Name: cidade_id_cidade_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+ALTER TABLE public.cidade ALTER COLUMN id_cidade ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.cidade_id_cidade_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 228 (class 1259 OID 18276)
+-- Name: contato; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.contato (
+                                id_contato integer NOT NULL,
+                                id_endereco integer,
+                                id_pessoa integer,
+                                celular character varying(100) NOT NULL,
+                                email character varying(100) NOT NULL,
+                                nome character varying(100) NOT NULL
+);
+
+
+--
+-- TOC entry 230 (class 1259 OID 18284)
+-- Name: contato_empresa; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.contato_empresa (
+                                        id_contato integer,
+                                        id_contato_empresa integer NOT NULL,
+                                        id_empresa integer,
+                                        id_tipo_contato_empresa integer
+);
+
+
+--
+-- TOC entry 229 (class 1259 OID 18283)
+-- Name: contato_empresa_id_contato_empresa_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+ALTER TABLE public.contato_empresa ALTER COLUMN id_contato_empresa ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.contato_empresa_id_contato_empresa_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 227 (class 1259 OID 18275)
+-- Name: contato_id_contato_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+ALTER TABLE public.contato ALTER COLUMN id_contato ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.contato_id_contato_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 264 (class 1259 OID 18657)
+-- Name: dados_tabelas; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.dados_tabelas (
+                                      id uuid NOT NULL,
+                                      analyze_count integer,
+                                      autoanalyze_count integer,
+                                      autovacuum_count integer,
+                                      idx_scan integer,
+                                      idx_tup_fetch integer,
+                                      last_analyze timestamp(6) without time zone,
+                                      last_autoanalyze timestamp(6) without time zone,
+                                      last_autovacuum timestamp(6) without time zone,
+                                      last_vacuum timestamp(6) without time zone,
+                                      n_dead_tup integer,
+                                      n_live_tup integer,
+                                      n_tup_del integer,
+                                      n_tup_hot_upd integer,
+                                      n_tup_ins integer,
+                                      n_tup_upd integer,
+                                      relid integer,
+                                      relname character varying(255),
+                                      schemaname character varying(255),
+                                      seq_scan integer,
+                                      seq_tup_read integer,
+                                      vacuum_count integer
+);
+
+
+--
+-- TOC entry 232 (class 1259 OID 18290)
+-- Name: empresa; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.empresa (
+                                id_empresa integer NOT NULL,
+                                id_endereco integer,
+                                id_endereco_cobranca integer,
+                                id_pessoa integer,
+                                inscricao_estadual character varying(100)
+);
+
+
+--
+-- TOC entry 231 (class 1259 OID 18289)
+-- Name: empresa_id_empresa_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+ALTER TABLE public.empresa ALTER COLUMN id_empresa ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.empresa_id_empresa_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 234 (class 1259 OID 18300)
+-- Name: endereco; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.endereco (
+                                 id_cidade integer NOT NULL,
+                                 id_endereco integer NOT NULL,
+                                 cep character varying(9) NOT NULL,
+                                 numero character varying(30) NOT NULL,
+                                 bairro character varying(50) NOT NULL,
+                                 complemento character varying(50),
+                                 logradouro character varying(50) NOT NULL
+);
+
+
+--
+-- TOC entry 233 (class 1259 OID 18299)
+-- Name: endereco_id_endereco_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+ALTER TABLE public.endereco ALTER COLUMN id_endereco ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.endereco_id_endereco_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 236 (class 1259 OID 18306)
+-- Name: estado; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.estado (
+                               id_estado integer NOT NULL,
+                               sigla character varying(2),
+                               nome character varying(100)
+);
+
+
+--
+-- TOC entry 235 (class 1259 OID 18305)
+-- Name: estado_id_estado_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+ALTER TABLE public.estado ALTER COLUMN id_estado ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.estado_id_estado_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 267 (class 1259 OID 18967)
+-- Name: events; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.events (
+                               id bigint NOT NULL
+);
+
+
+--
+-- TOC entry 238 (class 1259 OID 18312)
+-- Name: fornecedor; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.fornecedor (
+                                   id_empresa integer,
+                                   id_fornecedor integer NOT NULL
+);
+
+
+--
+-- TOC entry 237 (class 1259 OID 18311)
+-- Name: fornecedor_id_fornecedor_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+ALTER TABLE public.fornecedor ALTER COLUMN id_fornecedor ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.fornecedor_id_fornecedor_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 240 (class 1259 OID 18318)
+-- Name: funcionario; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.funcionario (
+                                    dt_contratacao date,
+                                    id_endereco integer,
+                                    id_funcionario integer NOT NULL,
+                                    id_pessoa integer,
+                                    status character varying(3),
+                                    celular character varying(255),
+                                    telefone character varying(255),
+                                    CONSTRAINT funcionario_status_check CHECK (((status)::text = ANY ((ARRAY['ATV'::character varying, 'INT'::character varying])::text[])))
+);
+
+
+--
+-- TOC entry 239 (class 1259 OID 18317)
+-- Name: funcionario_id_funcionario_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+ALTER TABLE public.funcionario ALTER COLUMN id_funcionario ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.funcionario_id_funcionario_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 268 (class 1259 OID 18972)
+-- Name: imagen; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.imagen (
+                               imagen_id uuid NOT NULL,
+                               nome character varying(100)
+);
+
+
+--
+-- TOC entry 269 (class 1259 OID 18977)
+-- Name: imagen_produto; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.imagen_produto (
+                                       produto_id integer,
+                                       imagen_id uuid NOT NULL
+);
+
+
+--
+-- TOC entry 271 (class 1259 OID 18983)
+-- Name: marca; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.marca (
+                              id_marca integer NOT NULL,
+                              descricao character varying(100)
+);
+
+
+--
+-- TOC entry 270 (class 1259 OID 18982)
+-- Name: marca_id_marca_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+ALTER TABLE public.marca ALTER COLUMN id_marca ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.marca_id_marca_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 242 (class 1259 OID 18348)
+-- Name: movimentacao; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.movimentacao (
+                                     dt_movimentacao date,
+                                     id_armazenagem integer,
+                                     id_movimentacao integer NOT NULL,
+                                     id_produto integer,
+                                     id_tipo_justificativa_movimentacao integer,
+                                     quantidade integer,
+                                     tipo_movimentacao character varying(3) NOT NULL,
+                                     descricao character varying(200),
+                                     CONSTRAINT movimentacao_tipo_movimentacao_check CHECK (((tipo_movimentacao)::text = ANY ((ARRAY['ENT'::character varying, 'SAI'::character varying, 'ALL'::character varying])::text[])))
+);
+
+
+--
+-- TOC entry 241 (class 1259 OID 18347)
+-- Name: movimentacao_id_movimentacao_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+ALTER TABLE public.movimentacao ALTER COLUMN id_movimentacao ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.movimentacao_id_movimentacao_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+
+--
+-- TOC entry 245 (class 1259 OID 18360)
+-- Name: permissao; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.permissao (
+                                  id_permissao integer NOT NULL,
+                                  nome character varying(255)
+);
+
+
+--
+-- TOC entry 244 (class 1259 OID 18359)
+-- Name: permissao_id_permissao_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+ALTER TABLE public.permissao ALTER COLUMN id_permissao ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.permissao_id_permissao_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 247 (class 1259 OID 18366)
+-- Name: pessoa; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.pessoa (
+                               dt_nascimento date,
+                               id_pessoa integer NOT NULL,
+                               tipopessoa character varying(3),
+                               cpf_cnpj character varying(30),
+                               inscricao_estadual character varying(30),
+                               apelido character varying(100),
+                               email character varying(100) NOT NULL,
+                               nome character varying(100) NOT NULL,
+                               CONSTRAINT pessoa_tipopessoa_check CHECK (((tipopessoa)::text = ANY ((ARRAY['fis'::character varying, 'jur'::character varying, 'est'::character varying])::text[])))
+);
+
+
+--
+-- TOC entry 246 (class 1259 OID 18365)
+-- Name: pessoa_id_pessoa_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+ALTER TABLE public.pessoa ALTER COLUMN id_pessoa ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.pessoa_id_pessoa_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 273 (class 1259 OID 18989)
+-- Name: produto; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.produto (
+                                altura real,
+                                dt_validade date,
+                                id_categoria integer,
+                                id_marca integer,
+                                id_produto integer NOT NULL,
+                                id_status integer NOT NULL,
+                                id_unidade_compra integer,
+                                id_unidade_venda integer,
+                                largura real,
+                                peso_bruto real,
+                                peso_liquido real,
+                                profundidade real,
+                                valor_custo numeric(38,2),
+                                valor_venda numeric(38,2),
+                                volume integer,
+                                codigo_barras bigint,
+                                nome character varying(100) NOT NULL,
+                                link_video character varying(150),
+                                observacao character varying(150),
+                                descricaocurta character varying(500),
+                                descricaolonga text
+);
+
+
+--
+-- TOC entry 272 (class 1259 OID 18988)
+-- Name: produto_id_produto_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+ALTER TABLE public.produto ALTER COLUMN id_produto ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.produto_id_produto_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 274 (class 1259 OID 18996)
+-- Name: produtos_tags; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.produtos_tags (
+                                      id_produto integer NOT NULL,
+                                      id_tag integer NOT NULL
+);
+
+
+--
+-- TOC entry 276 (class 1259 OID 19000)
+-- Name: status; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.status (
+                               id_status integer NOT NULL,
+                               descricao character varying(255)
+);
+
+
+--
+-- TOC entry 275 (class 1259 OID 18999)
+-- Name: status_id_status_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+ALTER TABLE public.status ALTER COLUMN id_status ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.status_id_status_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 249 (class 1259 OID 18387)
+-- Name: tag; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.tag (
+                            id_tag integer NOT NULL,
+                            nome character varying(100)
+);
+
+
+--
+-- TOC entry 248 (class 1259 OID 18386)
+-- Name: tag_id_tag_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+ALTER TABLE public.tag ALTER COLUMN id_tag ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.tag_id_tag_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 278 (class 1259 OID 19006)
+-- Name: tags; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.tags (
+                             id_tag integer NOT NULL,
+                             nome character varying(100)
+);
+
+
+--
+-- TOC entry 277 (class 1259 OID 19005)
+-- Name: tags_id_tag_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+ALTER TABLE public.tags ALTER COLUMN id_tag ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.tags_id_tag_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 251 (class 1259 OID 18393)
+-- Name: tipo_contato_empresa; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.tipo_contato_empresa (
+                                             id_tipo_contato_empresa integer NOT NULL,
+                                             descrisao character varying(50)
+);
+
+
+--
+-- TOC entry 250 (class 1259 OID 18392)
+-- Name: tipo_contato_empresa_id_tipo_contato_empresa_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+ALTER TABLE public.tipo_contato_empresa ALTER COLUMN id_tipo_contato_empresa ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.tipo_contato_empresa_id_tipo_contato_empresa_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 253 (class 1259 OID 18399)
+-- Name: tipo_justificativa_motivacao; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.tipo_justificativa_motivacao (
+                                                     id_tipo_justificativa_motivacao integer NOT NULL,
+                                                     descricao character varying(200)
+);
+
+
+--
+-- TOC entry 252 (class 1259 OID 18398)
+-- Name: tipo_justificativa_motivacao_id_tipo_justificativa_motivaca_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+ALTER TABLE public.tipo_justificativa_motivacao ALTER COLUMN id_tipo_justificativa_motivacao ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.tipo_justificativa_motivacao_id_tipo_justificativa_motivaca_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 280 (class 1259 OID 19012)
+-- Name: tipo_unidade; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.tipo_unidade (
+                                     id_status integer NOT NULL,
+                                     id_unidade integer NOT NULL,
+                                     descricao character varying(255) NOT NULL,
+                                     nome character varying(255) NOT NULL,
+                                     sigla character varying(255) NOT NULL
+);
+
+
+--
+-- TOC entry 279 (class 1259 OID 19011)
+-- Name: tipo_unidade_id_unidade_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+ALTER TABLE public.tipo_unidade ALTER COLUMN id_unidade ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.tipo_unidade_id_unidade_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 282 (class 1259 OID 19020)
+-- Name: tuple_dead; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.tuple_dead (
+                                   analyze_count integer,
+                                   autoanalyze_count integer,
+                                   autovacuum_count integer,
+                                   db integer NOT NULL,
+                                   dt date,
+                                   id integer NOT NULL,
+                                   idx_scan integer,
+                                   idx_tup_fetch integer,
+                                   n_dead_tup integer,
+                                   n_live_tup integer,
+                                   n_tup_del integer,
+                                   n_tup_hot_upd integer,
+                                   n_tup_ins integer,
+                                   n_tup_upd integer,
+                                   relid integer,
+                                   seq_scan integer,
+                                   seq_tup_read integer,
+                                   vacuum_count integer,
+                                   last_analyze timestamp(6) without time zone,
+                                   last_autoanalyze timestamp(6) without time zone,
+                                   last_autovacuum timestamp(6) without time zone,
+                                   last_vacuum timestamp(6) without time zone,
+                                   relname character varying(255),
+                                   schemaname character varying(255)
+);
+
+
+--
+-- TOC entry 281 (class 1259 OID 19019)
+-- Name: tuple_dead_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+ALTER TABLE public.tuple_dead ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.tuple_dead_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 254 (class 1259 OID 18413)
+-- Name: usaurio_permissoes; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.usaurio_permissoes (
+                                           id_permissao integer NOT NULL,
+                                           id_usuario integer NOT NULL
+);
+
+
+--
+-- TOC entry 256 (class 1259 OID 18419)
+-- Name: usuario; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.usuario (
+                                id_usuario integer NOT NULL,
+                                email character varying(255),
+                                nome character varying(255),
+                                password character varying(255),
+                                salt character varying(255),
+                                username character varying(255)
+);
+
+
+--
+-- TOC entry 255 (class 1259 OID 18418)
+-- Name: usuario_id_usuario_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+ALTER TABLE public.usuario ALTER COLUMN id_usuario ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.usuario_id_usuario_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 284 (class 1259 OID 19028)
+-- Name: wraparound_risk; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.wraparound_risk (
+                                        datfrozenxid integer,
+                                        id integer NOT NULL,
+                                        percentual integer,
+                                        dt timestamp(6) without time zone,
+                                        datname character varying(255),
+                                        CONSTRAINT wraparound_risk_datname_check CHECK (((datname)::text = ANY ((ARRAY['postgres'::character varying, 'siged'::character varying, 'baseArquivos'::character varying, 'sitemasLog'::character varying, 'sitemasComum'::character varying, 'adminitrativo'::character varying, 'sigaa'::character varying])::text[])))
+);
+
+
+--
+-- TOC entry 283 (class 1259 OID 19027)
+-- Name: wraparound_risk_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+ALTER TABLE public.wraparound_risk ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.wraparound_risk_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 3754 (class 0 OID 18574)
+-- Dependencies: 257
+-- Data for Name: auth_login; Type: TABLE DATA; Schema: auth; Owner: -
+--
+
+COPY auth.auth_login (auth_login_id, code, nonce, state, usado, valido_ate, auth_user_id, cliente_id) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3755 (class 0 OID 18579)
+-- Dependencies: 258
+-- Data for Name: auth_user; Type: TABLE DATA; Schema: auth; Owner: -
+--
+
+COPY auth.auth_user (auth_user_id, email, inativo, password, salt, username) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3756 (class 0 OID 18586)
+-- Dependencies: 259
+-- Data for Name: auth_user_permissao; Type: TABLE DATA; Schema: auth; Owner: -
+--
+
+COPY auth.auth_user_permissao (auth_user_id, permissao_id) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3757 (class 0 OID 18591)
+-- Dependencies: 260
+-- Data for Name: cliente; Type: TABLE DATA; Schema: auth; Owner: -
+--
+
+COPY auth.cliente (cliente_id, cliente_url, nome, redirecionamento, response_type, secret) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3760 (class 0 OID 18638)
+-- Dependencies: 263
+-- Data for Name: fluxo; Type: TABLE DATA; Schema: auth; Owner: -
+--
+
+COPY auth.fluxo (fluxo_id, response_type, client_id, redirect_uri, state, scope, dt_create, nonce) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3758 (class 0 OID 18599)
+-- Dependencies: 261
+-- Data for Name: permissao; Type: TABLE DATA; Schema: auth; Owner: -
+--
+
+COPY auth.permissao (permissao_id, nome) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3759 (class 0 OID 18604)
+-- Dependencies: 262
+-- Data for Name: pessoas; Type: TABLE DATA; Schema: auth; Owner: -
+--
+
+COPY auth.pessoas (pessoa_id, cpf, dt_nasc, nome, tenantid, auth_user_id) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3721 (class 0 OID 18258)
+-- Dependencies: 224
+-- Data for Name: armazenagem; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.armazenagem (id_armazenagem, nome, descricao) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3763 (class 0 OID 18962)
+-- Dependencies: 266
+-- Data for Name: categoria; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.categoria (id_categoria, nome, descricao) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3723 (class 0 OID 18270)
+-- Dependencies: 226
+-- Data for Name: cidade; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.cidade (id_cidade, id_estado, nome) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3725 (class 0 OID 18276)
+-- Dependencies: 228
+-- Data for Name: contato; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.contato (id_contato, id_endereco, id_pessoa, celular, email, nome) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3727 (class 0 OID 18284)
+-- Dependencies: 230
+-- Data for Name: contato_empresa; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.contato_empresa (id_contato, id_contato_empresa, id_empresa, id_tipo_contato_empresa) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3761 (class 0 OID 18657)
+-- Dependencies: 264
+-- Data for Name: dados_tabelas; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.dados_tabelas (id, analyze_count, autoanalyze_count, autovacuum_count, idx_scan, idx_tup_fetch, last_analyze, last_autoanalyze, last_autovacuum, last_vacuum, n_dead_tup, n_live_tup, n_tup_del, n_tup_hot_upd, n_tup_ins, n_tup_upd, relid, relname, schemaname, seq_scan, seq_tup_read, vacuum_count) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3729 (class 0 OID 18290)
+-- Dependencies: 232
+-- Data for Name: empresa; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.empresa (id_empresa, id_endereco, id_endereco_cobranca, id_pessoa, inscricao_estadual) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3731 (class 0 OID 18300)
+-- Dependencies: 234
+-- Data for Name: endereco; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.endereco (id_cidade, id_endereco, cep, numero, bairro, complemento, logradouro) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3733 (class 0 OID 18306)
+-- Dependencies: 236
+-- Data for Name: estado; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.estado (id_estado, sigla, nome) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3764 (class 0 OID 18967)
+-- Dependencies: 267
+-- Data for Name: events; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.events (id) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3735 (class 0 OID 18312)
+-- Dependencies: 238
+-- Data for Name: fornecedor; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.fornecedor (id_empresa, id_fornecedor) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3737 (class 0 OID 18318)
+-- Dependencies: 240
+-- Data for Name: funcionario; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.funcionario (dt_contratacao, id_endereco, id_funcionario, id_pessoa, status, celular, telefone) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3765 (class 0 OID 18972)
+-- Dependencies: 268
+-- Data for Name: imagen; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.imagen (imagen_id, nome) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3766 (class 0 OID 18977)
+-- Dependencies: 269
+-- Data for Name: imagen_produto; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.imagen_produto (produto_id, imagen_id) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3768 (class 0 OID 18983)
+-- Dependencies: 271
+-- Data for Name: marca; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.marca (id_marca, descricao) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3739 (class 0 OID 18348)
+-- Dependencies: 242
+-- Data for Name: movimentacao; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.movimentacao (dt_movimentacao, id_armazenagem, id_movimentacao, id_produto, id_tipo_justificativa_movimentacao, quantidade, tipo_movimentacao, descricao) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3740 (class 0 OID 18354)
+-- Dependencies: 243
+-- Data for Name: myentity; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+--
+-- TOC entry 3742 (class 0 OID 18360)
+-- Dependencies: 245
+-- Data for Name: permissao; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.permissao (id_permissao, nome) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3744 (class 0 OID 18366)
+-- Dependencies: 247
+-- Data for Name: pessoa; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.pessoa (dt_nascimento, id_pessoa, tipopessoa, cpf_cnpj, inscricao_estadual, apelido, email, nome) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3770 (class 0 OID 18989)
+-- Dependencies: 273
+-- Data for Name: produto; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.produto (altura, dt_validade, id_categoria, id_marca, id_produto, id_status, id_unidade_compra, id_unidade_venda, largura, peso_bruto, peso_liquido, profundidade, valor_custo, valor_venda, volume, codigo_barras, nome, link_video, observacao, descricaocurta, descricaolonga) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3771 (class 0 OID 18996)
+-- Dependencies: 274
+-- Data for Name: produtos_tags; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.produtos_tags (id_produto, id_tag) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3773 (class 0 OID 19000)
+-- Dependencies: 276
+-- Data for Name: status; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.status (id_status, descricao) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3746 (class 0 OID 18387)
+-- Dependencies: 249
+-- Data for Name: tag; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.tag (id_tag, nome) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3775 (class 0 OID 19006)
+-- Dependencies: 278
+-- Data for Name: tags; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.tags (id_tag, nome) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3748 (class 0 OID 18393)
+-- Dependencies: 251
+-- Data for Name: tipo_contato_empresa; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.tipo_contato_empresa (id_tipo_contato_empresa, descrisao) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3750 (class 0 OID 18399)
+-- Dependencies: 253
+-- Data for Name: tipo_justificativa_motivacao; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.tipo_justificativa_motivacao (id_tipo_justificativa_motivacao, descricao) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3777 (class 0 OID 19012)
+-- Dependencies: 280
+-- Data for Name: tipo_unidade; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.tipo_unidade (id_status, id_unidade, descricao, nome, sigla) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3779 (class 0 OID 19020)
+-- Dependencies: 282
+-- Data for Name: tuple_dead; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.tuple_dead (analyze_count, autoanalyze_count, autovacuum_count, db, dt, id, idx_scan, idx_tup_fetch, n_dead_tup, n_live_tup, n_tup_del, n_tup_hot_upd, n_tup_ins, n_tup_upd, relid, seq_scan, seq_tup_read, vacuum_count, last_analyze, last_autoanalyze, last_autovacuum, last_vacuum, relname, schemaname) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3751 (class 0 OID 18413)
+-- Dependencies: 254
+-- Data for Name: usaurio_permissoes; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.usaurio_permissoes (id_permissao, id_usuario) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3753 (class 0 OID 18419)
+-- Dependencies: 256
+-- Data for Name: usuario; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.usuario (id_usuario, email, nome, password, salt, username) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3781 (class 0 OID 19028)
+-- Dependencies: 284
+-- Data for Name: wraparound_risk; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.wraparound_risk (datfrozenxid, id, percentual, dt, datname) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3787 (class 0 OID 0)
+-- Dependencies: 223
+-- Name: armazenagem_id_armazenagem_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.armazenagem_id_armazenagem_seq', 1, false);
+
+
+--
+-- TOC entry 3788 (class 0 OID 0)
+-- Dependencies: 265
+-- Name: categoria_id_categoria_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.categoria_id_categoria_seq', 1, false);
+
+
+--
+-- TOC entry 3789 (class 0 OID 0)
+-- Dependencies: 225
+-- Name: cidade_id_cidade_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.cidade_id_cidade_seq', 1, false);
+
+
+--
+-- TOC entry 3790 (class 0 OID 0)
+-- Dependencies: 229
+-- Name: contato_empresa_id_contato_empresa_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.contato_empresa_id_contato_empresa_seq', 1, false);
+
+
+--
+-- TOC entry 3791 (class 0 OID 0)
+-- Dependencies: 227
+-- Name: contato_id_contato_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.contato_id_contato_seq', 1, false);
+
+
+--
+-- TOC entry 3792 (class 0 OID 0)
+-- Dependencies: 231
+-- Name: empresa_id_empresa_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.empresa_id_empresa_seq', 1, false);
+
+
+--
+-- TOC entry 3793 (class 0 OID 0)
+-- Dependencies: 233
+-- Name: endereco_id_endereco_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.endereco_id_endereco_seq', 1, false);
+
+
+--
+-- TOC entry 3794 (class 0 OID 0)
+-- Dependencies: 235
+-- Name: estado_id_estado_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.estado_id_estado_seq', 1, false);
+
+
+--
+-- TOC entry 3795 (class 0 OID 0)
+-- Dependencies: 237
+-- Name: fornecedor_id_fornecedor_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.fornecedor_id_fornecedor_seq', 1, false);
+
+
+--
+-- TOC entry 3796 (class 0 OID 0)
+-- Dependencies: 239
+-- Name: funcionario_id_funcionario_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.funcionario_id_funcionario_seq', 1, false);
+
+
+--
+-- TOC entry 3797 (class 0 OID 0)
+-- Dependencies: 270
+-- Name: marca_id_marca_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.marca_id_marca_seq', 1, false);
+
+
+--
+-- TOC entry 3798 (class 0 OID 0)
+-- Dependencies: 241
+-- Name: movimentacao_id_movimentacao_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.movimentacao_id_movimentacao_seq', 1, false);
+
+
+
+
+--
+-- TOC entry 3800 (class 0 OID 0)
+-- Dependencies: 244
+-- Name: permissao_id_permissao_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.permissao_id_permissao_seq', 1, false);
+
+
+--
+-- TOC entry 3801 (class 0 OID 0)
+-- Dependencies: 246
+-- Name: pessoa_id_pessoa_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.pessoa_id_pessoa_seq', 1, false);
+
+
+--
+-- TOC entry 3802 (class 0 OID 0)
+-- Dependencies: 272
+-- Name: produto_id_produto_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.produto_id_produto_seq', 1, false);
+
+
+--
+-- TOC entry 3803 (class 0 OID 0)
+-- Dependencies: 275
+-- Name: status_id_status_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.status_id_status_seq', 1, false);
+
+
+--
+-- TOC entry 3804 (class 0 OID 0)
+-- Dependencies: 248
+-- Name: tag_id_tag_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.tag_id_tag_seq', 1, false);
+
+
+--
+-- TOC entry 3805 (class 0 OID 0)
+-- Dependencies: 277
+-- Name: tags_id_tag_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.tags_id_tag_seq', 1, false);
+
+
+--
+-- TOC entry 3806 (class 0 OID 0)
+-- Dependencies: 250
+-- Name: tipo_contato_empresa_id_tipo_contato_empresa_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.tipo_contato_empresa_id_tipo_contato_empresa_seq', 1, false);
+
+
+--
+-- TOC entry 3807 (class 0 OID 0)
+-- Dependencies: 252
+-- Name: tipo_justificativa_motivacao_id_tipo_justificativa_motivaca_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.tipo_justificativa_motivacao_id_tipo_justificativa_motivaca_seq', 1, false);
+
+
+--
+-- TOC entry 3808 (class 0 OID 0)
+-- Dependencies: 279
+-- Name: tipo_unidade_id_unidade_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.tipo_unidade_id_unidade_seq', 1, false);
+
+
+--
+-- TOC entry 3809 (class 0 OID 0)
+-- Dependencies: 281
+-- Name: tuple_dead_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.tuple_dead_id_seq', 1, false);
+
+
+--
+-- TOC entry 3810 (class 0 OID 0)
+-- Dependencies: 255
+-- Name: usuario_id_usuario_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.usuario_id_usuario_seq', 1, false);
+
+
+--
+-- TOC entry 3811 (class 0 OID 0)
+-- Dependencies: 283
+-- Name: wraparound_risk_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.wraparound_risk_id_seq', 1, false);
+
+
+--
+-- TOC entry 3503 (class 2606 OID 18578)
+-- Name: auth_login auth_login_pkey; Type: CONSTRAINT; Schema: auth; Owner: -
+--
+
+ALTER TABLE ONLY auth.auth_login
+    ADD CONSTRAINT auth_login_pkey PRIMARY KEY (auth_login_id);
+
+
+--
+-- TOC entry 3507 (class 2606 OID 18590)
+-- Name: auth_user_permissao auth_user_permissao_pkey; Type: CONSTRAINT; Schema: auth; Owner: -
+--
+
+ALTER TABLE ONLY auth.auth_user_permissao
+    ADD CONSTRAINT auth_user_permissao_pkey PRIMARY KEY (auth_user_id, permissao_id);
+
+
+--
+-- TOC entry 3505 (class 2606 OID 18585)
+-- Name: auth_user auth_user_pkey; Type: CONSTRAINT; Schema: auth; Owner: -
+--
+
+ALTER TABLE ONLY auth.auth_user
+    ADD CONSTRAINT auth_user_pkey PRIMARY KEY (auth_user_id);
+
+
+--
+-- TOC entry 3509 (class 2606 OID 18598)
+-- Name: cliente cliente_pkey; Type: CONSTRAINT; Schema: auth; Owner: -
+--
+
+ALTER TABLE ONLY auth.cliente
+    ADD CONSTRAINT cliente_pkey PRIMARY KEY (cliente_id);
+
+
+--
+-- TOC entry 3517 (class 2606 OID 18646)
+-- Name: fluxo fluxo_pk; Type: CONSTRAINT; Schema: auth; Owner: -
+--
+
+ALTER TABLE ONLY auth.fluxo
+    ADD CONSTRAINT fluxo_pk PRIMARY KEY (fluxo_id);
+
+
+--
+-- TOC entry 3511 (class 2606 OID 18603)
+-- Name: permissao permissao_pkey; Type: CONSTRAINT; Schema: auth; Owner: -
+--
+
+ALTER TABLE ONLY auth.permissao
+    ADD CONSTRAINT permissao_pkey PRIMARY KEY (permissao_id);
+
+
+--
+-- TOC entry 3513 (class 2606 OID 18610)
+-- Name: pessoas pessoas_pkey; Type: CONSTRAINT; Schema: auth; Owner: -
+--
+
+ALTER TABLE ONLY auth.pessoas
+    ADD CONSTRAINT pessoas_pkey PRIMARY KEY (pessoa_id);
+
+
+--
+-- TOC entry 3515 (class 2606 OID 18612)
+-- Name: pessoas uk7tc4dvyrblo5u6wh5en7190kh; Type: CONSTRAINT; Schema: auth; Owner: -
+--
+
+ALTER TABLE ONLY auth.pessoas
+    ADD CONSTRAINT uk7tc4dvyrblo5u6wh5en7190kh UNIQUE (auth_user_id);
+
+
+--
+-- TOC entry 3461 (class 2606 OID 18262)
+-- Name: armazenagem armazenagem_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.armazenagem
+    ADD CONSTRAINT armazenagem_pkey PRIMARY KEY (id_armazenagem);
+
+
+--
+-- TOC entry 3521 (class 2606 OID 18966)
+-- Name: categoria categoria_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.categoria
+    ADD CONSTRAINT categoria_pkey PRIMARY KEY (id_categoria);
+
+
+--
+-- TOC entry 3463 (class 2606 OID 18274)
+-- Name: cidade cidade_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.cidade
+    ADD CONSTRAINT cidade_pkey PRIMARY KEY (id_cidade);
+
+
+--
+-- TOC entry 3469 (class 2606 OID 18288)
+-- Name: contato_empresa contato_empresa_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.contato_empresa
+    ADD CONSTRAINT contato_empresa_pkey PRIMARY KEY (id_contato_empresa);
+
+
+--
+-- TOC entry 3465 (class 2606 OID 18282)
+-- Name: contato contato_id_endereco_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.contato
+    ADD CONSTRAINT contato_id_endereco_key UNIQUE (id_endereco);
+
+
+--
+-- TOC entry 3467 (class 2606 OID 18280)
+-- Name: contato contato_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.contato
+    ADD CONSTRAINT contato_pkey PRIMARY KEY (id_contato);
+
+
+--
+-- TOC entry 3519 (class 2606 OID 18663)
+-- Name: dados_tabelas dados_tabelas_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.dados_tabelas
+    ADD CONSTRAINT dados_tabelas_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3471 (class 2606 OID 18298)
+-- Name: empresa empresa_id_endereco_cobranca_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.empresa
+    ADD CONSTRAINT empresa_id_endereco_cobranca_key UNIQUE (id_endereco_cobranca);
+
+
+--
+-- TOC entry 3473 (class 2606 OID 18296)
+-- Name: empresa empresa_id_endereco_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.empresa
+    ADD CONSTRAINT empresa_id_endereco_key UNIQUE (id_endereco);
+
+
+--
+-- TOC entry 3475 (class 2606 OID 18294)
+-- Name: empresa empresa_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.empresa
+    ADD CONSTRAINT empresa_pkey PRIMARY KEY (id_empresa);
+
+
+--
+-- TOC entry 3477 (class 2606 OID 18304)
+-- Name: endereco endereco_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.endereco
+    ADD CONSTRAINT endereco_pkey PRIMARY KEY (id_endereco);
+
+
+--
+-- TOC entry 3479 (class 2606 OID 18310)
+-- Name: estado estado_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.estado
+    ADD CONSTRAINT estado_pkey PRIMARY KEY (id_estado);
+
+
+--
+-- TOC entry 3523 (class 2606 OID 18971)
+-- Name: events events_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.events
+    ADD CONSTRAINT events_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3481 (class 2606 OID 18316)
+-- Name: fornecedor fornecedor_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.fornecedor
+    ADD CONSTRAINT fornecedor_pkey PRIMARY KEY (id_fornecedor);
+
+
+--
+-- TOC entry 3483 (class 2606 OID 18325)
+-- Name: funcionario funcionario_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.funcionario
+    ADD CONSTRAINT funcionario_pkey PRIMARY KEY (id_funcionario);
+
+
+--
+-- TOC entry 3525 (class 2606 OID 18976)
+-- Name: imagen imagen_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.imagen
+    ADD CONSTRAINT imagen_pkey PRIMARY KEY (imagen_id);
+
+
+--
+-- TOC entry 3527 (class 2606 OID 18981)
+-- Name: imagen_produto imagen_produto_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.imagen_produto
+    ADD CONSTRAINT imagen_produto_pkey PRIMARY KEY (imagen_id);
+
+
+--
+-- TOC entry 3529 (class 2606 OID 18987)
+-- Name: marca marca_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.marca
+    ADD CONSTRAINT marca_pkey PRIMARY KEY (id_marca);
+
+
+--
+-- TOC entry 3485 (class 2606 OID 18353)
+-- Name: movimentacao movimentacao_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.movimentacao
+    ADD CONSTRAINT movimentacao_pkey PRIMARY KEY (id_movimentacao);
+
+
+--
+-- TOC entry 3487 (class 2606 OID 18358)
+-- Name: myentity myentity_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+
+--
+-- TOC entry 3489 (class 2606 OID 18364)
+-- Name: permissao permissao_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.permissao
+    ADD CONSTRAINT permissao_pkey PRIMARY KEY (id_permissao);
+
+
+--
+-- TOC entry 3491 (class 2606 OID 18371)
+-- Name: pessoa pessoa_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.pessoa
+    ADD CONSTRAINT pessoa_pkey PRIMARY KEY (id_pessoa);
+
+
+--
+-- TOC entry 3531 (class 2606 OID 18995)
+-- Name: produto produto_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.produto
+    ADD CONSTRAINT produto_pkey PRIMARY KEY (id_produto);
+
+
+--
+-- TOC entry 3533 (class 2606 OID 19004)
+-- Name: status status_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.status
+    ADD CONSTRAINT status_pkey PRIMARY KEY (id_status);
+
+
+--
+-- TOC entry 3493 (class 2606 OID 18391)
+-- Name: tag tag_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tag
+    ADD CONSTRAINT tag_pkey PRIMARY KEY (id_tag);
+
+
+--
+-- TOC entry 3535 (class 2606 OID 19010)
+-- Name: tags tags_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tags
+    ADD CONSTRAINT tags_pkey PRIMARY KEY (id_tag);
+
+
+--
+-- TOC entry 3495 (class 2606 OID 18397)
+-- Name: tipo_contato_empresa tipo_contato_empresa_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tipo_contato_empresa
+    ADD CONSTRAINT tipo_contato_empresa_pkey PRIMARY KEY (id_tipo_contato_empresa);
+
+
+--
+-- TOC entry 3497 (class 2606 OID 18403)
+-- Name: tipo_justificativa_motivacao tipo_justificativa_motivacao_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tipo_justificativa_motivacao
+    ADD CONSTRAINT tipo_justificativa_motivacao_pkey PRIMARY KEY (id_tipo_justificativa_motivacao);
+
+
+--
+-- TOC entry 3537 (class 2606 OID 19018)
+-- Name: tipo_unidade tipo_unidade_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tipo_unidade
+    ADD CONSTRAINT tipo_unidade_pkey PRIMARY KEY (id_unidade);
+
+
+--
+-- TOC entry 3539 (class 2606 OID 19026)
+-- Name: tuple_dead tuple_dead_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tuple_dead
+    ADD CONSTRAINT tuple_dead_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3499 (class 2606 OID 18417)
+-- Name: usaurio_permissoes usaurio_permissoes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.usaurio_permissoes
+    ADD CONSTRAINT usaurio_permissoes_pkey PRIMARY KEY (id_permissao, id_usuario);
+
+
+--
+-- TOC entry 3501 (class 2606 OID 18425)
+-- Name: usuario usuario_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.usuario
+    ADD CONSTRAINT usuario_pkey PRIMARY KEY (id_usuario);
+
+
+--
+-- TOC entry 3541 (class 2606 OID 19033)
+-- Name: wraparound_risk wraparound_risk_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.wraparound_risk
+    ADD CONSTRAINT wraparound_risk_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3561 (class 2606 OID 18628)
+-- Name: auth_user_permissao fk5nnhqysc90wmn20womlq4dq7y; Type: FK CONSTRAINT; Schema: auth; Owner: -
+--
+
+ALTER TABLE ONLY auth.auth_user_permissao
+    ADD CONSTRAINT fk5nnhqysc90wmn20womlq4dq7y FOREIGN KEY (auth_user_id) REFERENCES auth.auth_user(auth_user_id);
+
+
+--
+-- TOC entry 3563 (class 2606 OID 18633)
+-- Name: pessoas fke35rof3jss53tmnk11qwb0ahk; Type: FK CONSTRAINT; Schema: auth; Owner: -
+--
+
+ALTER TABLE ONLY auth.pessoas
+    ADD CONSTRAINT fke35rof3jss53tmnk11qwb0ahk FOREIGN KEY (auth_user_id) REFERENCES auth.auth_user(auth_user_id);
+
+
+--
+-- TOC entry 3559 (class 2606 OID 18618)
+-- Name: auth_login fkhjfju7pw5brhuutou7p2g8fap; Type: FK CONSTRAINT; Schema: auth; Owner: -
+--
+
+ALTER TABLE ONLY auth.auth_login
+    ADD CONSTRAINT fkhjfju7pw5brhuutou7p2g8fap FOREIGN KEY (cliente_id) REFERENCES auth.cliente(cliente_id);
+
+
+--
+-- TOC entry 3560 (class 2606 OID 18613)
+-- Name: auth_login fkhqqyg6bp1eg99subjqd6ymydx; Type: FK CONSTRAINT; Schema: auth; Owner: -
+--
+
+ALTER TABLE ONLY auth.auth_login
+    ADD CONSTRAINT fkhqqyg6bp1eg99subjqd6ymydx FOREIGN KEY (auth_user_id) REFERENCES auth.auth_user(auth_user_id);
+
+
+--
+-- TOC entry 3562 (class 2606 OID 18623)
+-- Name: auth_user_permissao fkp3i2doq99nfacncb7nncngne6; Type: FK CONSTRAINT; Schema: auth; Owner: -
+--
+
+ALTER TABLE ONLY auth.auth_user_permissao
+    ADD CONSTRAINT fkp3i2doq99nfacncb7nncngne6 FOREIGN KEY (permissao_id) REFERENCES auth.permissao(permissao_id);
+
+
+--
+-- TOC entry 3566 (class 2606 OID 19064)
+-- Name: produto fk1mtu63p0vkyw3xy560mncmqtw; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.produto
+    ADD CONSTRAINT fk1mtu63p0vkyw3xy560mncmqtw FOREIGN KEY (id_unidade_venda) REFERENCES public.tipo_unidade(id_unidade);
+
+
+--
+-- TOC entry 3543 (class 2606 OID 18436)
+-- Name: contato fk2h6l5bma9cyyjy8ytvky10n1c; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.contato
+    ADD CONSTRAINT fk2h6l5bma9cyyjy8ytvky10n1c FOREIGN KEY (id_pessoa) REFERENCES public.pessoa(id_pessoa);
+
+
+--
+-- TOC entry 3564 (class 2606 OID 19034)
+-- Name: imagen_produto fk3acfsmtb5eht44r5jptmn7l5b; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.imagen_produto
+    ADD CONSTRAINT fk3acfsmtb5eht44r5jptmn7l5b FOREIGN KEY (produto_id) REFERENCES public.produto(id_produto);
+
+
+--
+-- TOC entry 3567 (class 2606 OID 19054)
+-- Name: produto fk3asnn1hpd794dbi1c6gqqr4ij; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.produto
+    ADD CONSTRAINT fk3asnn1hpd794dbi1c6gqqr4ij FOREIGN KEY (id_status) REFERENCES public.status(id_status);
+
+
+--
+-- TOC entry 3545 (class 2606 OID 18446)
+-- Name: contato_empresa fk4agq0m3rm9uy6tanhkqim9dcf; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.contato_empresa
+    ADD CONSTRAINT fk4agq0m3rm9uy6tanhkqim9dcf FOREIGN KEY (id_empresa) REFERENCES public.empresa(id_empresa);
+
+
+--
+-- TOC entry 3544 (class 2606 OID 18431)
+-- Name: contato fk4f3dawrrgho3chmoush4x0rfn; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.contato
+    ADD CONSTRAINT fk4f3dawrrgho3chmoush4x0rfn FOREIGN KEY (id_endereco) REFERENCES public.endereco(id_endereco);
+
+
+--
+-- TOC entry 3568 (class 2606 OID 19049)
+-- Name: produto fk5vd7utkg8j7kr26vls5h1gqrg; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.produto
+    ADD CONSTRAINT fk5vd7utkg8j7kr26vls5h1gqrg FOREIGN KEY (id_marca) REFERENCES public.marca(id_marca);
+
+
+--
+-- TOC entry 3571 (class 2606 OID 19074)
+-- Name: produtos_tags fk7kwslmiktfl8jwvgn0ru4w5mr; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.produtos_tags
+    ADD CONSTRAINT fk7kwslmiktfl8jwvgn0ru4w5mr FOREIGN KEY (id_produto) REFERENCES public.produto(id_produto);
+
+
+--
+-- TOC entry 3552 (class 2606 OID 18476)
+-- Name: fornecedor fk8tecxi4eb22udjft9hnghlp74; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.fornecedor
+    ADD CONSTRAINT fk8tecxi4eb22udjft9hnghlp74 FOREIGN KEY (id_empresa) REFERENCES public.empresa(id_empresa);
+
+
+--
+-- TOC entry 3553 (class 2606 OID 18481)
+-- Name: funcionario fk93g4pkk612dmp9yk3uvm5wsad; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.funcionario
+    ADD CONSTRAINT fk93g4pkk612dmp9yk3uvm5wsad FOREIGN KEY (id_endereco) REFERENCES public.endereco(id_endereco);
+
+
+--
+-- TOC entry 3548 (class 2606 OID 18456)
+-- Name: empresa fka5mardkoa528berll5vusgyoh; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.empresa
+    ADD CONSTRAINT fka5mardkoa528berll5vusgyoh FOREIGN KEY (id_endereco) REFERENCES public.endereco(id_endereco);
+
+
+--
+-- TOC entry 3549 (class 2606 OID 18466)
+-- Name: empresa fkatthijh2lrmw61fxfnt1kfno5; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.empresa
+    ADD CONSTRAINT fkatthijh2lrmw61fxfnt1kfno5 FOREIGN KEY (id_pessoa) REFERENCES public.pessoa(id_pessoa);
+
+
+--
+-- TOC entry 3569 (class 2606 OID 19044)
+-- Name: produto fkbb0k43mtsufg8bfhq0gyaxhhm; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.produto
+    ADD CONSTRAINT fkbb0k43mtsufg8bfhq0gyaxhhm FOREIGN KEY (id_categoria) REFERENCES public.categoria(id_categoria);
+
+
+--
+-- TOC entry 3550 (class 2606 OID 18461)
+-- Name: empresa fkedc7xyennyi3375nry4w3dyg2; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.empresa
+    ADD CONSTRAINT fkedc7xyennyi3375nry4w3dyg2 FOREIGN KEY (id_endereco_cobranca) REFERENCES public.endereco(id_endereco);
+
+
+--
+-- TOC entry 3555 (class 2606 OID 18511)
+-- Name: movimentacao fkeohngdiue9injxv0vpn176lfu; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.movimentacao
+    ADD CONSTRAINT fkeohngdiue9injxv0vpn176lfu FOREIGN KEY (id_armazenagem) REFERENCES public.armazenagem(id_armazenagem);
+
+
+--
+-- TOC entry 3570 (class 2606 OID 19059)
+-- Name: produto fkfi3y2aokks79hld5g6gck1mn4; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.produto
+    ADD CONSTRAINT fkfi3y2aokks79hld5g6gck1mn4 FOREIGN KEY (id_unidade_compra) REFERENCES public.tipo_unidade(id_unidade);
+
+
+--
+-- TOC entry 3557 (class 2606 OID 18556)
+-- Name: usaurio_permissoes fkg6uda74y62t05g1tqhk52qyr1; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.usaurio_permissoes
+    ADD CONSTRAINT fkg6uda74y62t05g1tqhk52qyr1 FOREIGN KEY (id_permissao) REFERENCES public.permissao(id_permissao);
+
+
+--
+-- TOC entry 3551 (class 2606 OID 18471)
+-- Name: endereco fkhu4avfrkfp65jedddkxe70r9a; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.endereco
+    ADD CONSTRAINT fkhu4avfrkfp65jedddkxe70r9a FOREIGN KEY (id_cidade) REFERENCES public.cidade(id_cidade);
+
+
+--
+-- TOC entry 3565 (class 2606 OID 19039)
+-- Name: imagen_produto fkibkbcq2wx4gfl4auidxi2inr1; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.imagen_produto
+    ADD CONSTRAINT fkibkbcq2wx4gfl4auidxi2inr1 FOREIGN KEY (imagen_id) REFERENCES public.imagen(imagen_id);
+
+
+--
+-- TOC entry 3546 (class 2606 OID 18441)
+-- Name: contato_empresa fkjmj6v7p93k88d0kjk2oc7wcs3; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.contato_empresa
+    ADD CONSTRAINT fkjmj6v7p93k88d0kjk2oc7wcs3 FOREIGN KEY (id_contato) REFERENCES public.contato(id_contato);
+
+
+--
+-- TOC entry 3542 (class 2606 OID 18426)
+-- Name: cidade fkjn311p28f0okajvcboowr5kpo; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.cidade
+    ADD CONSTRAINT fkjn311p28f0okajvcboowr5kpo FOREIGN KEY (id_estado) REFERENCES public.estado(id_estado);
+
+
+--
+-- TOC entry 3572 (class 2606 OID 19069)
+-- Name: produtos_tags fkkd2sip96os15pvnfch4ibwyj9; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.produtos_tags
+    ADD CONSTRAINT fkkd2sip96os15pvnfch4ibwyj9 FOREIGN KEY (id_tag) REFERENCES public.tags(id_tag);
+
+
+--
+-- TOC entry 3547 (class 2606 OID 18451)
+-- Name: contato_empresa fkla1xo0d02w30fpkvhfcifcojr; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.contato_empresa
+    ADD CONSTRAINT fkla1xo0d02w30fpkvhfcifcojr FOREIGN KEY (id_tipo_contato_empresa) REFERENCES public.tipo_contato_empresa(id_tipo_contato_empresa);
+
+
+--
+-- TOC entry 3573 (class 2606 OID 19079)
+-- Name: tipo_unidade fkly08lim8t65e353k76ymawf76; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tipo_unidade
+    ADD CONSTRAINT fkly08lim8t65e353k76ymawf76 FOREIGN KEY (id_status) REFERENCES public.status(id_status);
+
+
+--
+-- TOC entry 3554 (class 2606 OID 18486)
+-- Name: funcionario fkmflfgc1pxngkqvujs5c0rq4wm; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.funcionario
+    ADD CONSTRAINT fkmflfgc1pxngkqvujs5c0rq4wm FOREIGN KEY (id_pessoa) REFERENCES public.pessoa(id_pessoa);
+
+
+--
+-- TOC entry 3556 (class 2606 OID 18521)
+-- Name: movimentacao fkoek9e01q76vf92yjpmiqf8vle; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.movimentacao
+    ADD CONSTRAINT fkoek9e01q76vf92yjpmiqf8vle FOREIGN KEY (id_tipo_justificativa_movimentacao) REFERENCES public.tipo_justificativa_motivacao(id_tipo_justificativa_motivacao);
+
+
+--
+-- TOC entry 3558 (class 2606 OID 18561)
+-- Name: usaurio_permissoes fktri9d2y690lja1g9nrg8ar114; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.usaurio_permissoes
+    ADD CONSTRAINT fktri9d2y690lja1g9nrg8ar114 FOREIGN KEY (id_usuario) REFERENCES public.usuario(id_usuario);
+
+
+-- Completed on 2025-09-02 10:21:11 -03
+
+--
+-- PostgreSQL database dump complete
+--
+

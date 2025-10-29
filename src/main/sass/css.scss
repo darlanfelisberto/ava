@@ -1,0 +1,147 @@
+//----------------------------INICIO : template
+$bg-color-nav:#252b3b;
+$bg-color-header:#fff;
+$color-nav:#fff;
+.tesste{
+  margin: 69px;
+}
+body,html{
+  margin: 0;
+  padding: 0;
+  background-color: #f1f5f7;
+}
+
+.ds-template {
+  display: grid;
+  height: 100vh; /* Faz o grid ocupar 100% da altura da tela */
+  grid-template-areas:
+    "logo header"
+    "menu content"
+    //"menu footer"
+   ;
+  grid-template-columns: 150px 1fr;
+  grid-template-rows: auto 1fr auto;
+}
+.ds-template > div {
+  //background-color: rgba(255, 255, 255, 0.8);
+  padding: 5px;
+}
+.ds-template > div.logo {
+  grid-area: logo;
+  text-align: center;
+  background-color: $bg-color-nav;
+  color: $color-nav;
+}
+.ds-template > div.header {
+  grid-area: header;
+  text-align: center;
+  background-color: $bg-color-header;
+  box-shadow: 0 .225rem .25rem rgba(51, 51, 51, .26);
+}
+.ds-template > div.menu {
+  grid-area: menu;
+  background-color: $bg-color-nav;
+  color: $color-nav;
+  box-shadow: 0 .325rem .55rem rgba(51, 51, 51, .36);
+}
+.ds-template > div.content {
+  grid-area: content;
+}
+.ds-template > div.footer {
+  grid-area: footer;
+}
+@media (max-width: 768px) {
+  .ds-template{
+    /* Muda para um layout de UMA ÚNICA coluna */
+    grid-template-columns: 1fr;
+
+    /* Redefine as áreas para empilhar verticalmente */
+    /*TODO ajustar logo, menu e header para ocupar a mesma linha e menu ser um botao*/
+    grid-template-areas:
+            "header"
+            "logo"
+            "menu"
+            "content"
+            "footer";
+
+    /* Deixa a altura das linhas ser automática */
+    grid-template-rows: auto;
+    height: auto;
+  }
+}
+//----------------------------FIM : Template
+
+//----------------------------INICIO : grid responsivo
+//<div class="ds-grid-container">
+//  <div class="ds-grid-item ds-col-12">col12</div>
+//  <div class="ds-grid-item ds-col-8 ">Conteúdo Principal (8 colunas)</div>
+//  <div class="ds-grid-item ds-col-4 ">col4</div>
+//  <div class="ds-grid-item ds-col-4">Item 1 (4 colunas)</div>
+//  <div class="ds-grid-item ds-col-4">Item 2 (4 colunas)</div>
+//  <div class="ds-grid-item ds-col-4">Item 3 (4 colunas)</div>
+//  <div class="ds-grid-item ds-col-12 footer">Footer</div>
+//</div>
+.ds-grid-item {
+  display: grid;
+  padding: 0 0 1em 1em;
+}
+
+.ds-grid-item > label{
+  font-weight: bold;
+}
+
+.ds-grid-container {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  width: 100%;
+  margin: 20px auto;
+}
+
+.ds-col-2 {
+  grid-column: span 2;
+}
+.ds-col-3 {
+  grid-column: span 3;
+}
+.ds-col-4 {
+  grid-column: span 4;
+}
+.ds-col-6 {
+  grid-column: span 6;
+}
+.ds-col-8 {
+  grid-column: span 8;
+}
+.ds-col-12 {
+  grid-column: span 12;
+}
+
+
+@media (max-width: 768px) {
+  .ds-grid-container {
+    /* Em telas menores, muda para um layout de UMA ÚNICA coluna */
+    grid-template-columns: 1fr;
+  }
+  .ds-col-2,
+  .ds-col-3,
+  .ds-col-4,
+  .ds-col-6,
+  .ds-col-8,
+  .ds-col-12 {
+    grid-column: span 1; /* Ocupa 1 coluna, que é a largura total agora */
+  }
+}
+
+//--------------------------------FIM : Grid responsivo
+
+.ds-flex{
+  display: flex;
+}
+
+.ds-p-r1{
+  padding-right: 1rem;
+}
+
+.no-border{
+  border: none !important;
+}

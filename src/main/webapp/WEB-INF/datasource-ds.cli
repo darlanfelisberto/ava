@@ -1,0 +1,3 @@
+/subsystem=datasources/data-source=authDS:add(driver-name=postgresql,jndi-name="java:jboss/datasources/authDS",connection-url=${env.POSTGRESQL_URL},user-name=${env.POSTGRESQL_USER}, password=${env.POSTGRESQL_USER},max-pool-size=50,min-pool-size=1)
+/subsystem=datasources/data-source=avaDS:add(driver-name=postgresql,jndi-name="java:jboss/datasources/avaDS",connection-url=jdbc:postgresql://localhost:5432/ava,user-name=postgres, password=postgres,max-pool-size=20,min-pool-size=1)
+

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         version="6.0">
+    <session-config>
+        <session-timeout>15</session-timeout>
+    </session-config>
+
+    <context-param>
+        <param-name>jakarta.faces.PROJECT_STAGE</param-name>
+        <param-value>Development</param-value>
+    </context-param>
+
+    <servlet>
+        <servlet-name>FacesServlet</servlet-name>
+        <servlet-class>jakarta.faces.webapp.FacesServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>FacesServlet</servlet-name>
+        <url-pattern>*.xhtml</url-pattern>
+    </servlet-mapping>
+
+    <context-param>
+        <param-name>org.omnifaces.FACES_VIEWS_SCAN_PATHS</param-name>
+        <param-value>/*.xhtml/*, !/api</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>primefaces.SUBMIT</param-name>
+        <param-value>partial</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>primefaces.MOVE_SCRIPTS_TO_BOTTOM</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+        <param-name>primefaces.CLIENT_SIDE_LOCALISATION</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+
+    <context-param>
+        <param-name>org.omnifaces.VIEW_SCOPE_MANAGER_MAX_ACTIVE_VIEW_SCOPES</param-name>
+        <param-value>3</param-value>
+    </context-param>
+
+
+<!--    <context-param>-->
+<!--        <param-name>jakarta.faces.STATE_SAVING_METHOD</param-name>-->
+<!--        <param-value>client</param-value>-->
+<!--    </context-param>-->
+<!--    <env-entry>-->
+<!--        <env-entry-name>faces/ClientSideSecretKey</env-entry-name>-->
+<!--        <env-entry-type>java.lang.String</env-entry-type>-->
+<!--        <env-entry-value>sB0rBhBIC6Fso6Wwx9CXt5shtLYFHUwmBcG/q9CFc4A=</env-entry-value>-->
+<!--    </env-entry>-->
+
+    <!--
+    //    void geraCoisa() throws NoSuchAlgorithmException {
+//        KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+//        keyGen.init(256); // Use 128 for 16bit key.
+//        String key = Base64.getEncoder().encodeToString(keyGen.generateKey().getEncoded());
+//        System.out.println(key); // Prints AES key in Base64 format.
+//    }
+    -->
+
+<!--    <login-config>-->
+<!--        <auth-method>OIDC</auth-method>-->
+<!--    </login-config>-->
+<!--    <security-role>-->
+<!--        <role-name>*</role-name>-->
+<!--    </security-role>-->
+
+
+<!--&lt;!&ndash;    <security-role>&ndash;&gt;-->
+<!--&lt;!&ndash;        <role-name>IFFAR_ADMIN</role-name>&ndash;&gt;-->
+<!--&lt;!&ndash;    </security-role>&ndash;&gt;-->
+
+
+<!--    &lt;!&ndash; _________URLS___________________ &ndash;&gt;-->
+
+
+<!--    <security-constraint>-->
+<!--        <web-resource-collection>-->
+<!--            <web-resource-name>RU page</web-resource-name>-->
+<!--            <url-pattern>/app/*</url-pattern>-->
+<!--        </web-resource-collection>-->
+<!--        <auth-constraint>-->
+<!--            <role-name>*</role-name>-->
+<!--        </auth-constraint>-->
+<!--    </security-constraint>-->
+
+<!--    <security-constraint>-->
+<!--        <web-resource-collection>-->
+<!--            <web-resource-name>estoque</web-resource-name>-->
+<!--            <url-pattern>/app/produto*</url-pattern>-->
+<!--        </web-resource-collection>-->
+<!--        <auth-constraint>-->
+<!--            <role-name>IFFAR_ADMIN</role-name>-->
+<!--        </auth-constraint>-->
+<!--&lt;!&ndash;        <user-data-constraint>&ndash;&gt;-->
+<!--&lt;!&ndash;            <transport-guarantee>CONFIDENTIAL</transport-guarantee>&ndash;&gt;-->
+<!--&lt;!&ndash;        </user-data-constraint>&ndash;&gt;-->
+<!--    </security-constraint>-->
+
+</web-app>
