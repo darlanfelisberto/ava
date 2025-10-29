@@ -6,24 +6,8 @@ import { routes } from './app.routes';
 import { AuthService } from './auth.service';
 import { DefaultOAuthInterceptor, OAuthStorage, provideOAuthClient } from 'angular-oauth2-oidc';
 
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { providePrimeNG } from 'primeng/config';
-import Aura from '@primeuix/themes/aura';
-
 export const appConfig: ApplicationConfig = {
   providers: [
-
-    provideAnimationsAsync(),
-    providePrimeNG({
-      theme: {
-        preset: Aura,
-        options: {
-          prefix: 'p',
-          // darkModeSelector: 'system',
-          cssLayer: false
-        }
-      }
-    }),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
 
@@ -37,8 +21,7 @@ export const appConfig: ApplicationConfig = {
 
     {
       provide: APP_INITIALIZER,
-      // A factory agora retorna a Promise diretamente
-      useFactory: (authService: AuthService) => authService.runInitialLoginSequence(),
+      useFactory: (authService: AuthService) => () => authService.runInitialLoginSequence(),
       deps: [AuthService],
       multi: true,
     },
