@@ -8,29 +8,15 @@ import { DefaultOAuthInterceptor, OAuthStorage, provideOAuthClient } from 'angul
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
+    // provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
 
     // Configura o HttpClient para usar interceptors baseados em DI
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(),
 
     provideOAuthClient(), // Fornece o OAuthService
-
     // Define o storage que a biblioteca OIDC usará
     { provide: OAuthStorage, useFactory: () => localStorage },
 
-    {
-      provide: APP_INITIALIZER,
-      useFactory: (authService: AuthService) => () => authService.runInitialLoginSequence(),
-      deps: [AuthService],
-      multi: true,
-    },
-
-    // Adiciona o interceptor da biblioteca OIDC
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: DefaultOAuthInterceptor,
-      multi: true
-    }
   ]
 };

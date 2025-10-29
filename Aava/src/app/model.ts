@@ -10,10 +10,10 @@ export interface QuestaoDTO{
     tipoQuestao?: TipoQuestao;
     descricao?: string;
     resposta: string[];
-    listaAlternativa?: Alternativa[];
+    listaAlternativa?: AlternativaDTO[];
 }
 
-export interface Alternativa{
+export interface AlternativaDTO{
     idAlternativa?: number;
     descricao?: string;
 }

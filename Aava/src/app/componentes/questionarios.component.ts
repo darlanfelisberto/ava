@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { QuestionarioDTO } from '../model';
 import { RouterLink } from '@angular/router';
-import { QuestionarioService } from '../questionario.service';
+import { QuestionarioService } from '../services/questionario.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [RouterLink, CommonModule],
   template: `
-    <h2>Questionários</h2>
+    <h2>Meus Questionários</h2>
 
     <ul>
       @for (questionario of questionarios; track questionario.idQuestionario) {
@@ -41,7 +41,7 @@ export class QuestionariosComponent implements OnInit {
   private questionarioService = inject(QuestionarioService);
 
   ngOnInit(): void {
-    this.questionarioService.getAllQuestionarios().subscribe(data => {
+    this.questionarioService.getAll().subscribe(data => {
       this.questionarios = data;
     });
   }

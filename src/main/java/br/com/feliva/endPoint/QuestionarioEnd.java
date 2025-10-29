@@ -20,27 +20,12 @@ public class QuestionarioEnd  {
     private QuestionarioDAO questionarioDAO;
 
     @GET
-    @Path("/findById/{id}")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response teste(@PathParam("id") String id){
         try {
             var q = this.questionarioDAO.findById(Integer.parseInt(id));
             return Response.ok(q).build();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return Response.ok().build();
-    }
-
-    @GET
-    @Path("/minhaRespostaByQuestionario/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response minhaRespostaQuestionario(@PathParam("id") String id){
-        try {
-            System.out.println("asds");
-            var q = this.questionarioDAO.findRespostaQuetionario(Integer.parseInt(id));
-
-            return Response.ok(new RespostaQuestionarioDTO().inicialize(q)).build();
         }catch (Exception e){
             e.printStackTrace();
         }
