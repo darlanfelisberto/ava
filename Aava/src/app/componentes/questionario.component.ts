@@ -5,6 +5,7 @@ import { QuestionarioService } from '../services/questionario.service';
 import { CommonModule } from '@angular/common';
 import { QuestaoComponent } from './questao.component';
 import { RespostaService } from '../services/resposta.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-questionario',
@@ -39,20 +40,21 @@ export class QuestionarioComponent implements OnInit {
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      this.questionarioService.getById(+id).subscribe(data => {
-        this.questionario = data;
-        console.log(this.questionario);
-        this.respostaService.getRespostasByQuestionarioId(+id).subscribe(respostas => {
-          if (this.questionario) {
-            this.questionario.respostaQuestionario = respostas;
-            console.log(this.questionario);
-          }
-        });
+      forkJoin({
+        questionario: this.questionarioService.getById(+id),
+        respostas: this.respostaService.getRespostasByQuestionarioId(+id)
+      }).subscribe(({ questionario, respostas }) => {
+        this.questionario = questionario;
+        if (this.questionario) {
+          this.questionario.respostaQuestionario = respostas;
+        }
+        console.log('Dados carregados com forkJoin:', this.questionario);
       });
     }
   }
 
   getRespostaParaQuestao(idQuestao: number | undefined): RespostaQuestaoDTO | undefined {
+    console.log('idQuestao:', idQuestao);
     if (!idQuestao || !this.questionario?.respostaQuestionario?.listaRespostaQuestao) {
       return undefined;
     }
