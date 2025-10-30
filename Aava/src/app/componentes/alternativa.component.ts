@@ -14,7 +14,7 @@ import {AlternativaDTO, QuestaoDTO, RespostaQuestaoDTO} from '../model';
           [name]="questao?.idQuestao?.toString()"
           [value]="alternativa.idAlternativa"
           [checked]="isSelecionada(alternativa.idAlternativa)"
-          (change)="onAlternativaChange($event, alternativa.idAlternativa)">
+          (change)="onAlternativaChange($event, alternativa)">
         <label>{{ alternativa.descricao }}</label>
       </div>
     }
@@ -30,7 +30,7 @@ export class AlternativaComponent implements OnInit{
   @Input() questao: QuestaoDTO | undefined;
   @Input() respostaQuestao: RespostaQuestaoDTO | undefined;
 
-  @Output() respostaChange = new EventEmitter<{idAlternativa?: number, texto?: string, selecionada: boolean}>();
+  @Output() changeRespAlte = new EventEmitter<{alternativa: AlternativaDTO}>();
 
   ngOnInit() {
     console.log("res")
@@ -40,14 +40,9 @@ export class AlternativaComponent implements OnInit{
     console.log("-")
   }
 
-  onAlternativaChange(event: Event, idAlternativa: number | undefined) {
+  onAlternativaChange(event: Event, alternativa: AlternativaDTO ) {
     const input = event.target as HTMLInputElement;
-    this.respostaChange.emit({ idAlternativa: idAlternativa, selecionada: input.checked });
-  }
-
-  onDissertativaChange(event: Event) {
-    const textarea = event.target as HTMLTextAreaElement;
-    this.respostaChange.emit({ texto: textarea.value, selecionada: true });
+    this.changeRespAlte.emit({ alternativa: alternativa});
   }
 
   isSelecionada(idAlternativa: number | undefined): boolean {

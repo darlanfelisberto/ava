@@ -1,7 +1,7 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { QuestaoDTO, RespostaQuestaoDTO } from '../model';
-import { AlternativaComponent } from './alternativa.component';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {AlternativaDTO, QuestaoDTO, RespostaQuestaoDTO, TipoQuestao} from '../model';
+import {AlternativaComponent} from './alternativa.component';
 
 @Component({
   selector: 'app-questao',
@@ -14,7 +14,7 @@ import { AlternativaComponent } from './alternativa.component';
         [listaAlternativa]="questao.listaAlternativa"
         [questao]="questao"
         [respostaQuestao]="respostaQuestao"
-        (respostaChange)="onRespostaChange($event)">
+        (changeRespAlte)="changeRespAlte($event)">
       </app-alternativa>
     }
   `,
@@ -30,8 +30,13 @@ export class QuestaoComponent {
 
   @Output() respostaQuestaoChange = new EventEmitter<{idQuestao?: number, idAlternativa?: number, texto?: string, selecionada: boolean}>();
 
-  onRespostaChange(event: {idAlternativa?: number, texto?: string, selecionada: boolean}) {
-    this.respostaQuestaoChange.emit({ ...event, idQuestao: this.questao?.idQuestao });
+  changeRespAlte(event: {alternativa: AlternativaDTO}) {
+
+    if(this.questao?.tipoQuestao === TipoQuestao.unic){
+
+    }
+
+
     console.log(event)
   }
 }
