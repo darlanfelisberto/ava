@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { QuestionarioDTO, RespostaQuestaoDTO } from '../model';
+import { QuestionarioDTO, RespostaQuestaoDTO, RespostaQuestionarioDTO } from '../model';
 import { QuestionarioService } from '../services/questionario.service';
 import { CommonModule } from '@angular/common';
 import { QuestaoComponent } from './questao.component';
@@ -22,6 +22,7 @@ import { forkJoin } from 'rxjs';
           (respostaQuestaoChange)="onRespostaQuestaoChange($event)">
         </app-questao>
       }
+      <button (click)="submitAnswers()">Enviar Respostas</button>
     }
   `,
   styles: [`
@@ -63,9 +64,45 @@ export class QuestionarioComponent implements OnInit {
     );
   }
 
-  onRespostaQuestaoChange(event: {idQuestao?: number, idAlternativa?: number, texto?: string, selecionada: boolean}) {
-    console.log('Resposta recebida no QuestionarioComponent:', event);
-    // Aqui você adicionaria a lógica para atualizar o objeto this.questionario.respostaQuestionario
-    // com base no evento recebido.
+  onRespostaQuestaoChange(novaRespostaQuestao: RespostaQuestaoDTO) {
+    if (!this.questionario) {
+      return;
+    }
+
+    if (!this.questionario.respostaQuestionario) {
+      this.questionario.respostaQuestionario = { idQuestionario: this.questionario.idQuestionario, listaRespostaQuestao: [] };
+    } else if (!this.questionario.respostaQuestionario.listaRespostaQuestao) {
+      this.questionario.respostaQuestionario.listaRespostaQuestao = [];
+    }
+
+    const listaRespostas = this.questionario.respostaQuestionario.listaRespostaQuestao;
+    const index = listaRespostas!.findIndex(r => r.idQuestao === novaRespostaQuestao.idQuestao);
+
+    if (index > -1) {
+      // Atualiza a resposta existente
+      listaRespostas![index] = novaRespostaQuestao;
+    } else {
+      // Adiciona nova resposta
+      listaRespostas!.push(novaRespostaQuestao);
+    }
+
+    console.log('Resposta atualizada no QuestionarioComponent:', this.questionario.respostaQuestionario);
+  }
+
+  submitAnswers(): void {
+    if (this.questionario?.respostaQuestionario) {
+      this.respostaService.salvarRespostas(this.questionario.respostaQuestionario).subscribe({
+        next: (response) => {
+          console.log('Respostas enviadas com sucesso!', response);
+          // Optionally, handle success (e.g., show a message, navigate)
+        },
+        error: (error) => {
+          console.error('Erro ao enviar respostas:', error);
+          // Optionally, handle error (e.g., show an error message)
+        }
+      });
+    } else {
+      console.warn('Nenhuma resposta para enviar.');
+    }
   }
 }

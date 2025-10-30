@@ -15,4 +15,8 @@ export class RespostaService extends GenericService<RespostaQuestionarioDTO, num
   getRespostasByQuestionarioId(idQuestionario: number): Observable<RespostaQuestionarioDTO> {
     return this.http.get<RespostaQuestionarioDTO>(`${this.apiUrl}/questionario/${idQuestionario}`);
   }
+
+  salvarRespostas(respostas: RespostaQuestionarioDTO): Observable<RespostaQuestionarioDTO> {
+    return this.http.post<RespostaQuestionarioDTO>(this.apiUrl, respostas);
+  }
 }

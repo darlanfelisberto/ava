@@ -39,4 +39,8 @@ public class QuestionarioDAO extends InjectEntityManagerDAO<Questionario> {
             return null;
         }
     }
+
+    public void saveRespostaQuestionario(RespostaQuestionario respostaQuestionario) {
+        this.em.persist(respostaQuestionario);
+    }
 }

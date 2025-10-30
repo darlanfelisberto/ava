@@ -5,10 +5,7 @@ import br.com.feliva.erp.model.questionarios.dto.QuestionarioDTO;
 import br.com.feliva.erp.model.questionarios.dto.RespostaQuestionarioDTO;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -32,6 +29,18 @@ public class RespostaEnd {
             e.printStackTrace();
         }
         return Response.ok().build();
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response receberRespostas(RespostaQuestionarioDTO resposta) {
+        try {
+            questionarioDAO.saveRespostaQuestionario(resposta.toObject());
+            return Response.ok().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.serverError().entity(e.getMessage()).build();
+        }
     }
 
 }
