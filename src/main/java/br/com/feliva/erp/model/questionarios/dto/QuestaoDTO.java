@@ -16,7 +16,7 @@ public class QuestaoDTO {
 
     public Integer idQuestao;
 
-    public String tipoQuestao;
+    public Integer tipoQuestao;
 
     public String descricao;
 
@@ -25,7 +25,7 @@ public class QuestaoDTO {
     public QuestaoDTO inicialize(Questao q){
         idQuestao = q.getIdQuestao();
         descricao = q.getDescricao();
-        tipoQuestao = q.getTipoQuestao().getCod();
+        tipoQuestao = q.getTipoQuestao().getIdTipoQuestao();
         listaAlternativa = q.getListaAlternativa();
         return this;
     }
