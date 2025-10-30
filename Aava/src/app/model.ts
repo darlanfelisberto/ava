@@ -18,9 +18,10 @@ export interface AlternativaDTO{
     descricao?: string;
 }
 
-export interface TipoQuestao{
-    idTipoQuestao?: number;
-    nome?: string;
+export enum TipoQuestao{
+  desc = 1,
+  unic = 2,
+  mult = 3
 }
 
 export interface RespostaQuestaoDTO {

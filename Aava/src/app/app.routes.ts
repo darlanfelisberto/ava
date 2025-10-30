@@ -7,11 +7,11 @@ export const routes: Routes = [
     {
         path: 'questionario/:id',
         component: QuestionarioComponent,
-        canActivate: [authGuard]
+        // canActivate: [authGuard]
     },
     {
         path: 'questionarios',
         component: QuestionariosComponent,
-        canActivate: [authGuard]
+        // canActivate: [authGuard]
     }
 ];

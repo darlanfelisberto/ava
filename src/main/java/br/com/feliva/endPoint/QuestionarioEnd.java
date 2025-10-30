@@ -2,6 +2,7 @@ package br.com.feliva.endPoint;
 
 import br.com.feliva.dao.questionario.QuestionarioDAO;
 import br.com.feliva.erp.model.questionarios.RespostaQuestionario;
+import br.com.feliva.erp.model.questionarios.dto.QuestaoDTO;
 import br.com.feliva.erp.model.questionarios.dto.QuestionarioDTO;
 import br.com.feliva.erp.model.questionarios.dto.RespostaQuestaoDTO;
 import br.com.feliva.erp.model.questionarios.dto.RespostaQuestionarioDTO;
@@ -25,7 +26,10 @@ public class QuestionarioEnd  {
     public Response teste(@PathParam("id") String id){
         try {
             var q = this.questionarioDAO.findById(Integer.parseInt(id));
-            return Response.ok(q).build();
+            var dto = new QuestionarioDTO()
+                    .inicialize(q)
+                    .inicializeQuestoes(q.getListaQuestao());
+            return Response.ok(dto).build();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -33,9 +37,9 @@ public class QuestionarioEnd  {
     }
 
     @GET
-    @Path("/listAllQuestionarios")
+    @Path("/getAll")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response listAllQuestionarios(){
+    public Response getAll(){
         try {
             var q = this.questionarioDAO.listAllQuestionarios();
 

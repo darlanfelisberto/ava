@@ -12,8 +12,7 @@ import { AlternativaComponent } from './alternativa.component';
       <h3>{{ questao.descricao }}</h3>
       <app-alternativa
         [listaAlternativa]="questao.listaAlternativa"
-        [tipoQuestao]="questao.tipoQuestao?.nome"
-        [idQuestao]="questao.idQuestao"
+        [questao]="questao"
         [respostaQuestao]="respostaQuestao"
         (respostaChange)="onRespostaChange($event)">
       </app-alternativa>

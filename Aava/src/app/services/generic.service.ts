@@ -5,7 +5,7 @@ export abstract class GenericService<T, ID> {
   constructor(protected http: HttpClient, protected apiUrl: string) {}
 
   getAll(): Observable<T[]> {
-    return this.http.get<T[]>(`${this.apiUrl}`);
+    return this.http.get<T[]>(`${this.apiUrl}/getAll`);
   }
 
   getById(id: ID): Observable<T> {

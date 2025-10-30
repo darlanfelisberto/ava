@@ -1,5 +1,6 @@
 package br.com.feliva.erp.model.questionarios.dto;
 
+import br.com.feliva.erp.model.questionarios.Questao;
 import br.com.feliva.erp.model.questionarios.Questionario;
 import jakarta.persistence.Column;
 
@@ -12,9 +13,19 @@ public class QuestionarioDTO {
 
     public String descricao;
 
+    public List<QuestaoDTO> listaQuestao;
+
     public QuestionarioDTO inicialize(Questionario q){
         this.idQuestionario = q.getIdQuestionario();
         this.descricao = q.getDescricao();
+        return this;
+    }
+
+    public QuestionarioDTO inicializeQuestoes(List<Questao> lista){
+        this.listaQuestao = new ArrayList<>();
+        lista.forEach( item -> {
+            this.listaQuestao.add(new QuestaoDTO().inicialize(item));
+        });
         return this;
     }
 

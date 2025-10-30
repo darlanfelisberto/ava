@@ -41,9 +41,11 @@ export class QuestionarioComponent implements OnInit {
     if (id) {
       this.questionarioService.getById(+id).subscribe(data => {
         this.questionario = data;
+        console.log(this.questionario);
         this.respostaService.getRespostasByQuestionarioId(+id).subscribe(respostas => {
           if (this.questionario) {
             this.questionario.respostaQuestionario = respostas;
+            console.log(this.questionario);
           }
         });
       });

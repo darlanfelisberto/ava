@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AlternativaDTO, RespostaQuestaoDTO } from '../model';
+import {AlternativaDTO, QuestaoDTO, RespostaQuestaoDTO} from '../model';
 
 @Component({
   selector: 'app-alternativa',
@@ -11,7 +11,7 @@ import { AlternativaDTO, RespostaQuestaoDTO } from '../model';
       <div>
         <input
           type="radio"
-          [name]="idQuestao?.toString()"
+          [name]="questao?.idQuestao?.toString()"
           [value]="alternativa.idAlternativa"
           [checked]="isSelecionada(alternativa.idAlternativa)"
           (change)="onAlternativaChange($event, alternativa.idAlternativa)">
@@ -25,13 +25,20 @@ import { AlternativaDTO, RespostaQuestaoDTO } from '../model';
     }
   `]
 })
-export class AlternativaComponent {
+export class AlternativaComponent implements OnInit{
   @Input() listaAlternativa: AlternativaDTO[] = [];
-  @Input() tipoQuestao: string | undefined;
-  @Input() idQuestao: number | undefined;
+  @Input() questao: QuestaoDTO | undefined;
   @Input() respostaQuestao: RespostaQuestaoDTO | undefined;
 
   @Output() respostaChange = new EventEmitter<{idAlternativa?: number, texto?: string, selecionada: boolean}>();
+
+  ngOnInit() {
+    console.log("res")
+    console.log(this.respostaQuestao);
+    console.log("ques")
+    console.log(this.questao);
+    console.log("-")
+  }
 
   onAlternativaChange(event: Event, idAlternativa: number | undefined) {
     const input = event.target as HTMLInputElement;
