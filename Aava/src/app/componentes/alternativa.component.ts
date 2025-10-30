@@ -13,7 +13,7 @@ import {AlternativaDTO, QuestaoDTO, RespostaQuestaoDTO, TipoQuestao} from '../mo
     @for (alternativa of listaAlternativa; track alternativa.idAlternativa) {
       <div>
         <input
-          type="radio"
+          [type]="questao?.tipoQuestao === TipoQuestao.mult ? 'checkbox' : 'radio'"
           [name]="nomeMesclar ? questao?.idQuestao?.toString() + '_' + alternativa.idAlternativa : questao?.idQuestao?.toString()"
           [value]="alternativa.idAlternativa"
           [checked]="isSelecionada(alternativa.idAlternativa)"
@@ -34,7 +34,7 @@ export class AlternativaComponent implements OnInit{
   @Input() respostaQuestao: RespostaQuestaoDTO | undefined;
   @Input() nomeMesclar:boolean = false;
 
-  @Output() changeRespAlte = new EventEmitter<{alternativa: AlternativaDTO}>();
+  @Output() changeRespAlte = new EventEmitter<{alternativa: AlternativaDTO, checked: boolean}>();
 
   ngOnInit() {
     console.log("res")
@@ -47,7 +47,7 @@ export class AlternativaComponent implements OnInit{
 
   onAlternativaChange(event: Event, alternativa: AlternativaDTO ) {
     const input = event.target as HTMLInputElement;
-    this.changeRespAlte.emit({ alternativa: alternativa});
+    this.changeRespAlte.emit({ alternativa: alternativa, checked: input.checked});
   }
 
   isSelecionada(idAlternativa: number | undefined): boolean {

@@ -31,31 +31,39 @@ export class QuestaoComponent {
 
   @Output() respostaQuestaoChange = new EventEmitter<RespostaQuestaoDTO>();
 
-  changeRespAlte(event: {alternativa: AlternativaDTO}) {
-
-    if(this.questao?.tipoQuestao === TipoQuestao.unic){
-      if (!this.respostaQuestao) {
-        this.respostaQuestao = {};
-        this.respostaQuestao.listaRespostaAlternativa = [];
-      }
-
-      if (!this.respostaQuestao.idQuestao && this.questao.idQuestao) {
-        this.respostaQuestao.idQuestao = this.questao.idQuestao;
-      }
-
-      // Clear previous selections for unic type
+  changeRespAlte(event: {alternativa: AlternativaDTO, checked: boolean}) {
+    if (!this.respostaQuestao) {
+      this.respostaQuestao = {};
+    }
+    if (!this.respostaQuestao.listaRespostaAlternativa) {
       this.respostaQuestao.listaRespostaAlternativa = [];
-
-      // Add the new selection
-      const novaRespostaAlternativa:RespostaAlternativaDTO = {};
-      novaRespostaAlternativa.IdAlternativa = event.alternativa.idAlternativa;
-      this.respostaQuestao.listaRespostaAlternativa.push(novaRespostaAlternativa);
-
-      this.respostaQuestaoChange.emit(this.respostaQuestao);
     }
 
+    if (!this.respostaQuestao.idQuestao && this.questao && this.questao.idQuestao) {
+      this.respostaQuestao.idQuestao = this.questao.idQuestao;
+    }
 
-    console.log(event)
+    switch (this.questao?.tipoQuestao) {
+      case TipoQuestao.unic:
+        this.respostaQuestao.listaRespostaAlternativa = [];
+        const novaRespostaAlternativaUnic: RespostaAlternativaDTO = {};
+        novaRespostaAlternativaUnic.IdAlternativa = event.alternativa.idAlternativa;
+        this.respostaQuestao.listaRespostaAlternativa.push(novaRespostaAlternativaUnic);
+        break;
+      case TipoQuestao.mult:
+        if (event.checked) {
+          const novaRespostaAlternativaMult: RespostaAlternativaDTO = {};
+          novaRespostaAlternativaMult.IdAlternativa = event.alternativa.idAlternativa;
+          this.respostaQuestao.listaRespostaAlternativa.push(novaRespostaAlternativaMult);
+        } else {
+          this.respostaQuestao.listaRespostaAlternativa = this.respostaQuestao.listaRespostaAlternativa.filter(
+            resp => resp.IdAlternativa !== event.alternativa.idAlternativa
+          );
+        }
+        break;
+    }
+
+    this.respostaQuestaoChange.emit(this.respostaQuestao);
   }
 
   protected readonly TipoQuestao = TipoQuestao;
