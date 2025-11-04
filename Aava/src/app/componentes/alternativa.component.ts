@@ -8,9 +8,7 @@ import {AlternativaDTO, QuestaoDTO, RespostaQuestaoDTO, TipoQuestao} from '../mo
   imports: [CommonModule],
   template: `
 
-
-
-    @for (alternativa of listaAlternativa; track alternativa.idAlternativa) {
+    @for (alternativa of questao?.listaAlternativa; track alternativa.idAlternativa) {
       <div>
         <input
           [type]="questao?.tipoQuestao === TipoQuestao.mult ? 'checkbox' : 'radio'"
@@ -29,7 +27,6 @@ import {AlternativaDTO, QuestaoDTO, RespostaQuestaoDTO, TipoQuestao} from '../mo
   `]
 })
 export class AlternativaComponent implements OnInit{
-  @Input() listaAlternativa: AlternativaDTO[] = [];
   @Input() questao: QuestaoDTO | undefined;
   @Input() respostaQuestao: RespostaQuestaoDTO | undefined;
   @Input() nomeMesclar:boolean = false;
@@ -37,11 +34,11 @@ export class AlternativaComponent implements OnInit{
   @Output() changeRespAlte = new EventEmitter<{alternativa: AlternativaDTO, checked: boolean}>();
 
   ngOnInit() {
-    console.log("res")
+    console.log("alt>>>>>>>>>>>>>>>>>>>>>>>")
     console.log(this.respostaQuestao);
     console.log("ques")
     console.log(this.questao);
-    console.log("-")
+    console.log("<<<<<<<<<<<<<<<<<<<<<")
   }
 
 
@@ -51,10 +48,10 @@ export class AlternativaComponent implements OnInit{
   }
 
   isSelecionada(idAlternativa: number | undefined): boolean {
-    if (!idAlternativa || !this.respostaQuestao?.listaRespostaAlternativa) {
+    if (!idAlternativa || !this.respostaQuestao?.listaAlternativa) {
       return false;
     }
-    return this.respostaQuestao.listaRespostaAlternativa.some(resp => resp.IdAlternativa === idAlternativa);
+    return this.respostaQuestao.listaAlternativa.some(resp => resp.idAlternativa === idAlternativa);
   }
 
   getRespostaDissertativa(): string {

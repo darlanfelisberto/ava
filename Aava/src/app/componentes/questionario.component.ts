@@ -49,7 +49,7 @@ export class QuestionarioComponent implements OnInit {
         if (this.questionario) {
           this.questionario.respostaQuestionario = respostas;
         }
-        console.log('Dados carregados com forkJoin:', this.questionario);
+        // console.log('Dados carregados com forkJoin:', this.questionario);
       });
     }
   }

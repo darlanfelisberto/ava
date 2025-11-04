@@ -27,13 +27,7 @@ export enum TipoQuestao{
 export interface RespostaQuestaoDTO {
     idQuestao?: number;
     idRespostaQuestao?: number;
-    listaRespostaAlternativa?: RespostaAlternativaDTO[];
-}
-
-export interface RespostaAlternativaDTO {
-    idRespostaAlternativa?: number;
-    idRespostaQuestao?: number;
-    IdAlternativa?: number;
+    listaAlternativa?: AlternativaDTO[];
 }
 
 export interface RespostaQuestionarioDTO {
