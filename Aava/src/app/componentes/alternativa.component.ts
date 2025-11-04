@@ -34,13 +34,12 @@ export class AlternativaComponent implements OnInit{
   @Output() changeRespAlte = new EventEmitter<{alternativa: AlternativaDTO, checked: boolean}>();
 
   ngOnInit() {
-    console.log("alt>>>>>>>>>>>>>>>>>>>>>>>")
-    console.log(this.respostaQuestao);
-    console.log("ques")
-    console.log(this.questao);
-    console.log("<<<<<<<<<<<<<<<<<<<<<")
+    // console.log("alt>>>>>>>>>>>>>>>>>>>>>>>")
+    // console.log(this.respostaQuestao);
+    // console.log("ques")
+    // console.log(this.questao);
+    // console.log("<<<<<<<<<<<<<<<<<<<<<")
   }
-
 
   onAlternativaChange(event: Event, alternativa: AlternativaDTO ) {
     const input = event.target as HTMLInputElement;

@@ -42,33 +42,28 @@ export class QuestaoComponent implements OnInit{
     if (!this.respostaQuestao) {
       this.respostaQuestao = {};
     }
-    // if (!this.respostaQuestao.listaAlternativas) {
-    //   this.respostaQuestao.listaAlternativas = [];
-    // }
-    //
-    // if (!this.respostaQuestao.idQuestao && this.questao && this.questao.idQuestao) {
-    //   this.respostaQuestao.idQuestao = this.questao.idQuestao;
-    // }
-    //
-    // switch (this.questao?.tipoQuestao) {
-    //   case TipoQuestao.unic:
-    //     this.respostaQuestao.listaAlternativas = [];
-    //     const novaRespostaAlternativaUnic: RespostaAlternativaDTO = {};
-    //     novaRespostaAlternativaUnic.idAlternativa = event.alternativa.idAlternativa;
-    //     this.respostaQuestao.listaAlternativas.push(novaRespostaAlternativaUnic);
-    //     break;
-    //   case TipoQuestao.mult:
-    //     if (event.checked) {
-    //       const novaRespostaAlternativaMult: RespostaAlternativaDTO = {};
-    //       novaRespostaAlternativaMult.idAlternativa = event.alternativa.idAlternativa;
-    //       this.respostaQuestao.listaAlternativas.push(novaRespostaAlternativaMult);
-    //     } else {
-    //       this.respostaQuestao.listaAlternativas = this.respostaQuestao.listaAlternativas.filter(
-    //         resp => resp.idAlternativa !== event.alternativa.idAlternativa
-    //       );
-    //     }
-    //     break;
-    // }
+    if (!this.respostaQuestao.listaAlternativa) {
+      this.respostaQuestao.listaAlternativa = [];
+    }
+
+    if (!this.respostaQuestao.idQuestao && this.questao && this.questao.idQuestao) {
+      this.respostaQuestao.idQuestao = this.questao.idQuestao;
+    }
+
+    switch (this.questao?.tipoQuestao) {
+      case TipoQuestao.unic:
+        this.respostaQuestao.listaAlternativa.push(event.alternativa);
+        break;
+      case TipoQuestao.mult:
+        if (event.checked) {
+          this.respostaQuestao.listaAlternativa.push(event.alternativa);
+        } else {
+          this.respostaQuestao.listaAlternativa = this.respostaQuestao.listaAlternativa.filter(
+            resp => resp.idAlternativa !== event.alternativa.idAlternativa
+          );
+        }
+        break;
+    }
 
     this.respostaQuestaoChange.emit(this.respostaQuestao);
   }
