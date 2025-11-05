@@ -2,6 +2,7 @@ package br.com.feliva.erp.model.questionarios;
 
 import br.com.feliva.sharedClass.db.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -15,6 +16,7 @@ public class RespostaQuestionario extends Model<Integer> {
     @Column(name = "id_resposta_questionario")
     private Integer idRespostaQuestionario;
 
+    @JsonIgnoreProperties({"listaQuestao"})
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_questionario")
     private Questionario questionario;
@@ -27,7 +29,6 @@ public class RespostaQuestionario extends Model<Integer> {
         return this.idRespostaQuestionario;
     }
 
-    @JsonIgnore
     public Questionario getQuestionario() {
         return questionario;
     }

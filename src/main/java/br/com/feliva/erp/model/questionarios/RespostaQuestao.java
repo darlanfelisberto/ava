@@ -1,7 +1,10 @@
 package br.com.feliva.erp.model.questionarios;
 
+import br.com.feliva.erp.model.questionarios.dto.RespostaAlternativaDTO;
+import br.com.feliva.erp.model.questionarios.dto.RespostaQuestaoDTO;
 import br.com.feliva.sharedClass.db.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -15,15 +18,17 @@ public class RespostaQuestao extends Model<Integer> {
     @Column(name = "id_resposta_questao")
     private Integer idRespostaQuestao;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_resposta_questionario")
     private RespostaQuestionario respostaQuestionario;
 
+    @JsonIgnoreProperties({"listaAlternativa","tipoQuestao"})
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_questao")
     private Questao questao;
 
-    @OneToMany(mappedBy = "respostaQuestao", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "respostaQuestao", fetch = FetchType.LAZY)
     private List<RespostaAlternativa> listaRespostaAlternativa;
 
     @Override
@@ -61,5 +66,21 @@ public class RespostaQuestao extends Model<Integer> {
 
     public void setListaRespostaAlternativa(List<RespostaAlternativa> listaRespostaAlternativa) {
         this.listaRespostaAlternativa = listaRespostaAlternativa;
+    }
+
+    public boolean contemRespostaAlternativa(RespostaAlternativaDTO alternativa){
+        for(var item : this.listaRespostaAlternativa){
+            if(item.equals(alternativa)){
+
+            }
+        }
+        return false;
+    }
+
+    public static RespostaQuestao fromJson(RespostaQuestaoDTO respostaQuestaoDTO){
+        var respostaQuestao = new RespostaQuestao();
+//        respostaQuestao.se
+
+        return null;
     }
 }

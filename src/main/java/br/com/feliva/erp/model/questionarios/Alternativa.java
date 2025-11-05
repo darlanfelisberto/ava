@@ -13,6 +13,7 @@ public class Alternativa extends Model<Integer> {
     @Column(name = "id_alternativa")
     private Integer idAlternativa;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_questao")
     private Questao questao;
@@ -33,7 +34,6 @@ public class Alternativa extends Model<Integer> {
         this.idAlternativa = idAlternativa;
     }
 
-    @JsonIgnore
     public Questao getQuestao() {
         return questao;
     }

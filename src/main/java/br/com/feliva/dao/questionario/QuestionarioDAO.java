@@ -6,6 +6,7 @@ import br.com.feliva.erp.model.questionarios.RespostaQuestionario;
 import br.com.feliva.sharedClass.db.InjectEntityManagerDAO;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.persistence.NoResultException;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 
@@ -22,10 +23,25 @@ public class QuestionarioDAO extends InjectEntityManagerDAO<Questionario> {
         }
     }
 
+    @Transactional
     public RespostaQuestionario findRespostaQuetionario(Integer id){
         try {
-            return (RespostaQuestionario) this.em.createQuery("select q from RespostaQuestionario q where q.questionario.idQuestionario = :id")
-                    .setParameter("id",id)
+            this.em.createQuery("""
+                select rqs from RespostaQuestionario rq 
+                    left join rq.questionario q 
+                    left join  rq.listaRespostaQuestao rqs
+                    left join fetch rqs.listaRespostaAlternativa lra
+                    left join fetch lra.alternativa
+                    where q.idQuestionario = :id
+            """).setParameter("id",id)
+                    .getResultList();
+            return (RespostaQuestionario) this.em.createQuery("""
+                    select rq from RespostaQuestionario rq 
+                    left join fetch rq.questionario q 
+                    left join fetch rq.listaRespostaQuestao rqs
+                    left join fetch rqs.questao qr  
+                    where q.idQuestionario = :id
+                    """).setParameter("id",id)
                     .getSingleResult();
         } catch (NoResultException e) {
             return null;
@@ -43,4 +59,5 @@ public class QuestionarioDAO extends InjectEntityManagerDAO<Questionario> {
     public void saveRespostaQuestionario(RespostaQuestionario respostaQuestionario) {
         this.em.persist(respostaQuestionario);
     }
+
 }

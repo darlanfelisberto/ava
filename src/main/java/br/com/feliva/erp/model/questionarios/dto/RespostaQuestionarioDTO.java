@@ -1,11 +1,13 @@
 package br.com.feliva.erp.model.questionarios.dto;
 
+import br.com.feliva.erp.model.questionarios.Questionario;
 import br.com.feliva.erp.model.questionarios.RespostaQuestionario;
+import br.com.feliva.sharedClass.db.Model;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RespostaQuestionarioDTO {
+public class RespostaQuestionarioDTO extends Model<Integer> {
     public Integer idQuestionario;
     public Integer idRespostaQuestionario;
     public List<RespostaQuestaoDTO> listaRespostaQuestao;
@@ -25,5 +27,20 @@ public class RespostaQuestionarioDTO {
         });
 
         return l;
+    }
+
+//    public RespostaQuestionario toObject() {
+//        var respostaQuestionario = new RespostaQuestionario();
+//        respostaQuestionario.setIdRespostaQuestionario(this.idRespostaQuestionario);
+//        Questionario questionario = new Questionario();
+//        questionario.setIdQuestionario(this.idQuestionario);
+//        respostaQuestionario.setQuestionario(questionario);
+//        respostaQuestionario.setListaRespostaQuestao(RespostaQuestaoDTO.toList(this.listaRespostaQuestao, respostaQuestionario));
+//        return respostaQuestionario;
+//    }
+
+    @Override
+    public Integer getMMId() {
+        return idRespostaQuestionario;
     }
 }

@@ -1,6 +1,7 @@
 package br.com.feliva.erp.model.questionarios;
 
 import br.com.feliva.sharedClass.db.Model;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -16,9 +17,19 @@ public class RespostaAlternativa extends Model<Integer> {
     @JoinColumn(name = "id_alternativa")
     private Alternativa alternativa;
 //
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_resposta_questao")
     private RespostaQuestao respostaQuestao;
+
+    public RespostaAlternativa(Alternativa alternativa, RespostaQuestao respostaQuestao) {
+        this.alternativa = alternativa;
+        this.respostaQuestao = respostaQuestao;
+    }
+
+    public RespostaAlternativa() {
+
+    }
 
     @Override
     public Integer getMMId() {
