@@ -4,6 +4,7 @@ import br.com.feliva.dao.questionario.*;
 import br.com.feliva.erp.model.questionarios.*;
 import br.com.feliva.erp.model.questionarios.dto.RespostaQuestaoDTO;
 import br.com.feliva.erp.model.questionarios.dto.RespostaQuestionarioDTO;
+import br.com.feliva.sharedClass.db.Model;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -14,6 +15,7 @@ import jakarta.ws.rs.core.Response;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequestScoped
 @Path("/resposta")
@@ -63,36 +65,16 @@ public class RespostaEnd {
 
             if (respostaQuestionario == null) { //verifica e salva a nova tentativa de resposta ao questionario
 
-//                respostaQuestionario = respostaQuestionarioDTO.toObject();
-//                respostaQuestionario.setQuestionario(this.questionarioDAO.findById(respostaQuestionarioDTO.idQuestionario));
-//
-//                if(respostaQuestionario.getQuestionario() == null) {
-//                    throw new RuntimeException("Questionario nao foi encontrado");
-//                }
-//
-//                this.respostaQuestionarioDAO.persistT(respostaQuestionario);
+
             }else {
                 for (RespostaQuestaoDTO respQDTO : respostaQuestionarioDTO.listaRespostaQuestao){
                     var respostaQuestao = this.respostaQuestaoDAO.findRespostaQuestaoAndRespQuestionario(respostaQuestionario.getMMId(), respQDTO.idQuestao);
                     if(respostaQuestao == null){
                         //cria uma
-                    }
-                    List<Alternativa> remove = new ArrayList<>();
-                    List<Alternativa> persist = new ArrayList<>();
-//
-//                    var respostas =  this.respostaAlternativaDAO.findAll(respostaQuestao);
-                    for(var altdto : respQDTO.listaAlternativa){
-                        if(respostaQuestao.getListaRespostaAlternativa() == null){
-                            respostaQuestao.setListaRespostaAlternativa(new ArrayList<RespostaAlternativa>());
-                        }
-                        respostaQuestao.getListaRespostaAlternativa();
-//                        if(altdto.isNovo()){
-//                            var alternativa = this.alternativaDAO.findById(altdto.idAlternativa);
-//                            var respostaAlternativa = new RespostaAlternativa(alternativa,respostaQuestao);
-//                            this.respostaAlternativaDAO.persistT(respostaAlternativa);
-//                        }else {
-//                            //TODO: Implementar busca de RespostaAlternativa
-//                        }
+                    }else {
+                        List<RespostaAlternativa> remove = this.removerAlternativaRespostaQuestao(respostaQuestao, respQDTO);
+                        List<RespostaAlternativa> persist = this.persistAlternativaRespostaQuestao(respostaQuestao, respQDTO);
+                        this.respostaAlternativaDAO.removeMultiplas(remove,persist);
                     }
                 }
             }
@@ -103,8 +85,39 @@ public class RespostaEnd {
         }
     }
 
-    public void processaListaAlternativas(){
+    public List<RespostaAlternativa> removerAlternativaRespostaQuestao(RespostaQuestao respostaQuestao,RespostaQuestaoDTO dto){
+        List<RespostaAlternativa> remover = new ArrayList<>();
+        respostaQuestao.getListaRespostaAlternativa().forEach(respostaAlternativa -> {
+            var sim = true;
+            for(var altDto : dto.listaAlternativa) {
+                if(altDto.idAlternativa.equals(respostaAlternativa.getAlternativa().getIdAlternativa())){
+                    sim = false;
+                }
+            }
+            if(sim){
+                remover.add(respostaAlternativa);
+            }
+        });
+        return remover;
+    }
 
+    public List<RespostaAlternativa> persistAlternativaRespostaQuestao(RespostaQuestao respostaQuestao,RespostaQuestaoDTO dto){
+        List<RespostaAlternativa> persist = new ArrayList<>();
+        dto.listaAlternativa.forEach(altDto -> {
+            var sim = true;
+           for(var respostaAlternativa : respostaQuestao.getListaRespostaAlternativa()){
+               if(altDto.idAlternativa.equals(respostaAlternativa.getAlternativa().getIdAlternativa())) {
+                sim = false;
+               }
+           }
+            if(sim){
+                var ra = new RespostaAlternativa();
+                ra.setRespostaQuestao(respostaQuestao);
+                ra.setAlternativa(this.alternativaDAO.findById(altDto.idAlternativa));
+                persist.add(ra);
+            }
+        });
+        return persist;
     }
 
     public void processaRespostaQuestao(List<RespostaQuestaoDTO> listaRespostaQuestaoDTO){

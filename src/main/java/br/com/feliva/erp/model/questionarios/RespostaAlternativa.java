@@ -14,12 +14,12 @@ public class RespostaAlternativa extends Model<Integer> {
     private Integer idRespostaAlternativa;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_alternativa")
+    @JoinColumn(name = "id_alternativa",nullable = false)
     private Alternativa alternativa;
 //
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_resposta_questao")
+    @JoinColumn(name = "id_resposta_questao",nullable = false)
     private RespostaQuestao respostaQuestao;
 
     public RespostaAlternativa(Alternativa alternativa, RespostaQuestao respostaQuestao) {

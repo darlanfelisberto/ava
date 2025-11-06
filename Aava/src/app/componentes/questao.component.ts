@@ -52,7 +52,7 @@ export class QuestaoComponent implements OnInit{
 
     switch (this.questao?.tipoQuestao) {
       case TipoQuestao.unic:
-        this.respostaQuestao.listaAlternativa.push(event.alternativa);
+        this.respostaQuestao.listaAlternativa = [event.alternativa];
         break;
       case TipoQuestao.mult:
         if (event.checked) {

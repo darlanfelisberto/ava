@@ -5,6 +5,7 @@ import br.com.feliva.erp.model.questionarios.RespostaQuestao;
 import br.com.feliva.sharedClass.db.InjectEntityManagerDAO;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.persistence.NoResultException;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 
@@ -33,6 +34,16 @@ public class RespostaAlternativaDAO extends InjectEntityManagerDAO<RespostaAlter
         } catch (NoResultException e) {
             return null;
         }
+    }
+
+    @Transactional
+    public void removeMultiplas(List<RespostaAlternativa> remove,List<RespostaAlternativa> persist){
+        remove.forEach(respostaAlternativa -> {
+            this.em.remove(respostaAlternativa);
+        });
+        persist.forEach(respostaAlternativa -> {
+            this.em.persist(respostaAlternativa);
+        });
     }
 
 

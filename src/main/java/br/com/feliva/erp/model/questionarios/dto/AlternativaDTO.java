@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class AlternativaDTO {
+public class AlternativaDTO extends Model<Integer>{
 
     public Integer idAlternativa;
 
@@ -29,5 +29,11 @@ public class AlternativaDTO {
         });
 
         return l;
+    }
+
+
+    @Override
+    public Integer getMMId() {
+        return this.idAlternativa;
     }
 }
