@@ -18,6 +18,9 @@ import {Button} from 'primeng/button';
         <input type="text" class="fff" placeholder="Descrição" required>
       </h2>
     </div>
+    <h1 class="text-3xl font-bold underline">
+      Hello world!
+    </h1>
   `,
   styles: [`
     .fff{
