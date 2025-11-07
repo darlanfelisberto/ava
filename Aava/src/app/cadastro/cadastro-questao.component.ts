@@ -3,14 +3,26 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { QuestaoDTO, TipoQuestao, AlternativaDTO } from '../model';
-import {Select } from 'primeng/select';
+import { Select } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
+import { AlternativaDescComponent } from './alternativa-desc.component';
+import { AlternativaUnicComponent } from './alternativa-unic.component';
+import { AlternativaMultComponent } from './alternativa-mult.component';
 
 @Component({
   selector: 'app-cadastro-questao',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputTextModule, ButtonModule, Select],
+  imports: [
+    CommonModule,
+    FormsModule,
+    InputTextModule,
+    ButtonModule,
+    Select,
+    AlternativaDescComponent,
+    AlternativaUnicComponent,
+    AlternativaMultComponent
+  ],
   template: `
     <div class="card">
       <div class="card-header">
@@ -28,27 +40,13 @@ import { ButtonModule } from 'primeng/button';
         <div >
           @switch (questao.tipoQuestao) {
             @case (TipoQuestao.desc) {
-              <textarea pInputTextarea placeholder="Resposta descritiva" [disabled]="true"></textarea>
+              <app-alternativa-desc [questao]="questao"></app-alternativa-desc>
             }
             @case (TipoQuestao.unic) {
-              @for (alternativa of questao.listaAlternativa; track alternativa) {
-                <div class="alternativa">
-                  <input type="radio" [name]="'alternativa_' + questao.idQuestao" [disabled]="true" />
-                  <input pInputText type="text" [(ngModel)]="alternativa.descricao" placeholder="Alternativa" />
-                  <p-button icon="pi pi-trash" (click)="removerAlternativa(alternativa)" styleClass="p-button-danger p-button-text"></p-button>
-                </div>
-              }
-              <p-button icon="pi pi-plus" (click)="adicionarAlternativa()" styleClass="p-button-text"></p-button>
+              <app-alternativa-unic [questao]="questao"></app-alternativa-unic>
             }
             @case (TipoQuestao.mult) {
-              @for (alternativa of questao.listaAlternativa; track alternativa) {
-                <div class="alternativa">
-                  <input type="checkbox" [disabled]="true" />
-                  <input pInputText type="text" [(ngModel)]="alternativa.descricao" placeholder="Alternativa" />
-                  <p-button icon="pi pi-trash" (click)="removerAlternativa(alternativa)" styleClass="p-button-danger p-button-text"></p-button>
-                </div>
-              }
-              <p-button icon="pi pi-plus" (click)="adicionarAlternativa()" styleClass="p-button-text"></p-button>
+              <app-alternativa-mult [questao]="questao"></app-alternativa-mult>
             }
           }
         </div>
@@ -102,14 +100,6 @@ import { ButtonModule } from 'primeng/button';
       ::-ms-input-placeholder { /* Edge */
         color: #adb5bd;
       }
-      .alternativa {
-        display: flex;
-        align-items: center;
-        margin-top: 0.5rem;
-      }
-      .alternativa input[type="radio"], .alternativa input[type="checkbox"] {
-        margin-right: 0.5rem;
-      }
   `]
 })
 export class CadastroQuestaoComponent {
@@ -130,13 +120,5 @@ export class CadastroQuestaoComponent {
     } else if (!this.questao.listaAlternativa || this.questao.listaAlternativa.length === 0) {
       this.questao.listaAlternativa = [{} as AlternativaDTO];
     }
-  }
-
-  adicionarAlternativa() {
-    this.questao.listaAlternativa?.push({} as AlternativaDTO);
-  }
-
-  removerAlternativa(alternativa: AlternativaDTO) {
-    this.questao.listaAlternativa = this.questao.listaAlternativa?.filter(a => a !== alternativa);
   }
 }
