@@ -35,14 +35,15 @@ import { InputTextModule } from 'primeng/inputtext';
         rows="1"
       ></textarea>
 
-      <div class="questoes-section">
+      <div class="mt-1">
         @for (questao of pagina.questoes; track questao) {
           <app-cadastro-questao [questao]="questao" (removerQuestao)="removerQuestao(questao)"></app-cadastro-questao>
         }
       </div>
 
       <div class="pagina-footer">
-        <p-button icon="pi pi-plus-circle" (click)="adicionarQuestao()" styleClass="p-button-text"></p-button>
+        <p-button icon="pi pi-plus-circle" (click)="adicionarQuestao()" styleClass="p-button-text" title="Adicionar Questão"></p-button>
+        <p-button icon="pi pi-search" styleClass="p-button-text" title="Buscar Questão"></p-button>
       </div>
     </div>
   `,
@@ -103,17 +104,6 @@ import { InputTextModule } from 'primeng/inputtext';
         resize: none;
         overflow: hidden;
         color: #495057;
-      }
-      ::placeholder {
-        color: #adb5bd;
-        opacity: 1; /* Firefox */
-      }
-
-      ::-ms-input-placeholder { /* Edge */
-        color: #adb5bd;
-      }
-      .questoes-section {
-        margin-top: 1rem;
       }
   `]
 })

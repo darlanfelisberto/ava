@@ -7,8 +7,7 @@ import { Select } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { AlternativaDescComponent } from './alternativa-desc.component';
-import { AlternativaUnicComponent } from './alternativa-unic.component';
-import { AlternativaMultComponent } from './alternativa-mult.component';
+import { AlternativaEscolhaComponent } from './alternativa-escolha.component';
 
 @Component({
   selector: 'app-cadastro-questao',
@@ -20,34 +19,32 @@ import { AlternativaMultComponent } from './alternativa-mult.component';
     ButtonModule,
     Select,
     AlternativaDescComponent,
-    AlternativaUnicComponent,
-    AlternativaMultComponent
+    AlternativaEscolhaComponent
   ],
   template: `
     <div class="card">
       <div class="card-header">
-        <p-button icon="pi pi-trash" styleClass="p-button-danger p-button-text" title="Excluir"
-                  (click)="removerQuestao.emit()"></p-button>
+        <p-button icon="pi pi-trash" styleClass="p-button-danger p-button-text" title="Excluir" (click)="removerQuestao.emit()"></p-button>
       </div>
       <div class="card-main pt-4 pb-4">
-        <input
-          pInputText
-          type="text"
-          class="enunciado-input"
-          placeholder="Digite sua pergunta"
-          [(ngModel)]="questao.descricao"
-          name="descricaoQuestao_{{questao.idQuestao}}"
-        />
-        <div>
+          <input
+            pInputText
+            type="text"
+            class="title-input"
+            placeholder="Enunciado da Questão"
+            [(ngModel)]="questao.descricao"
+            name="descricaoQuestao_{{questao.idQuestao}}"
+          />
+        <div >
           @switch (questao.tipoQuestao) {
             @case (TipoQuestao.desc) {
-              <app-alternativa-desc [questao]="questao"></app-alternativa-desc>
+              <app-alternativa-desc [questao]="questao" ></app-alternativa-desc>
             }
             @case (TipoQuestao.unic) {
-              <app-alternativa-unic [questao]="questao"></app-alternativa-unic>
+              <app-alternativa-escolha [questao]="questao" [tipo]="TipoQuestao.unic"></app-alternativa-escolha>
             }
             @case (TipoQuestao.mult) {
-              <app-alternativa-mult [questao]="questao"></app-alternativa-mult>
+              <app-alternativa-escolha [questao]="questao" [tipo]="TipoQuestao.mult"></app-alternativa-escolha>
             }
           }
         </div>
@@ -73,43 +70,40 @@ import { AlternativaMultComponent } from './alternativa-mult.component';
       border-radius: 5px;
       background-color: #f9f9f9;
     }
-
     .card-header {
       display: flex;
       justify-content: flex-end;
     }
-
     .card .card-header p-button, .card .card-footer {
       visibility: hidden;
     }
-
     .card:hover .card-header p-button, .card:hover .card-footer {
       visibility: visible;
     }
+    .title-input {
+        width: 100%;
+        border: none;
+        background-color: transparent;
+        outline: none;
+        padding: 10px 0;
+        border-bottom: 2px solid transparent;
+        transition: border-bottom-color 0.3s;
+        box-shadow: none;
+        font-size: 1rem;
+        font-weight: 400;
+        color: #212529;
+      }
+      .title-input:hover, .title-input:focus {
+        border-bottom-color: #dee2e6;
+      }
+      ::placeholder {
+        color: #adb5bd;
+        opacity: 1; /* Firefox */
+      }
 
-    .enunciado-input {
-      width: 100%;
-      background-color: transparent;
-      outline: none;
-      border: 2px solid transparent;
-      transition: border-bottom-color 0.3s;
-      box-shadow: none;
-      font-weight: 400;
-      color: #212529;
-    }
-
-    .enunciado-input:hover, .enunciado-input:focus {
-      border-color: #dee2e6;
-    }
-
-    ::placeholder {
-      color: #adb5bd;
-      opacity: 1; /* Firefox */
-    }
-
-    ::-ms-input-placeholder { /* Edge */
-      color: #adb5bd;
-    }
+      ::-ms-input-placeholder { /* Edge */
+        color: #adb5bd;
+      }
   `]
 })
 export class CadastroQuestaoComponent {

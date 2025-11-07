@@ -1,18 +1,22 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { QuestaoDTO, AlternativaDTO } from '../model';
+import { QuestaoDTO, AlternativaDTO, TipoQuestao } from '../model';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
-  selector: 'app-alternativa-mult',
+  selector: 'app-alternativa-escolha',
   standalone: true,
   imports: [CommonModule, FormsModule, ButtonModule, InputTextModule],
   template: `
     @for (alternativa of questao.listaAlternativa; track alternativa) {
       <div class="alternativa">
-        <input type="checkbox" [disabled]="true" />
+        @if (tipo === TipoQuestao.unic) {
+          <input type="radio" [name]="'alternativa_' + questao.idQuestao" [disabled]="true" />
+        } @else {
+          <input type="checkbox" [disabled]="true" />
+        }
         <input pInputText type="text" [(ngModel)]="alternativa.descricao" placeholder="Alternativa" class="title-input" />
         <p-button icon="pi pi-trash" (click)="removerAlternativa(alternativa)" styleClass="p-button-danger p-button-text"></p-button>
       </div>
@@ -25,7 +29,7 @@ import { InputTextModule } from 'primeng/inputtext';
       align-items: center;
       margin-top: 0.5rem;
     }
-    .alternativa input[type="checkbox"] {
+    .alternativa input[type="radio"], .alternativa input[type="checkbox"] {
       margin-right: 0.5rem;
     }
     .alternativa p-button {
@@ -66,8 +70,11 @@ import { InputTextModule } from 'primeng/inputtext';
       }
   `]
 })
-export class AlternativaMultComponent {
+export class AlternativaEscolhaComponent {
   @Input() questao!: QuestaoDTO;
+  @Input() tipo!: TipoQuestao.unic | TipoQuestao.mult;
+
+  TipoQuestao = TipoQuestao;
 
   adicionarAlternativa() {
     this.questao.listaAlternativa?.push({} as AlternativaDTO);

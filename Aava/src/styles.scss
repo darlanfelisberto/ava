@@ -1,3 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
 @use "tailwindcss";
 @import "primeicons/primeicons.css";
+
+::placeholder {
+  color: #adb5bd;
+  opacity: 1; /* Firefox */
+}
+
+::-ms-input-placeholder { /* Edge */
+  color: #adb5bd;
+}
