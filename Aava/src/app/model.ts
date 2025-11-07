@@ -1,5 +1,6 @@
 export interface QuestionarioDTO{
     idQuestionario?: number;
+    nome?: string;
     descricao?: string;
     listaQuestao?: QuestaoDTO[];
     respostaQuestionario?:RespostaQuestionarioDTO;
