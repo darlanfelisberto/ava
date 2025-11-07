@@ -12,34 +12,52 @@ import {Button} from 'primeng/button';
   standalone: true,
   imports: [ CommonModule, TableModule],
   template: `
-    <div>
-      <h2>
-        <input type="text" class="fff" placeholder="Nome" required>
-        <input type="text" class="fff" placeholder="Descrição" required>
-      </h2>
+    <div class="flex flex-col">
+
+        <input type="text" class="put" placeholder="Nome" required>
+      <textarea class="put" placeholder="Descrição" name="story" rows="3" required></textarea>
+
     </div>
-    <h1 class="text-3xl font-bold underline">
-      Hello world!
-    </h1>
+    <div style="padding: 50px" class="page">
+        <h3>page 1</h3>
+
+        <div>
+            <main>
+              asdasdsa
+            </main>
+          <ul>
+            <li>d</li>
+          </ul>
+        </div>
+    </div>
   `,
   styles: [`
-    .fff{
+    .put {
       border: 0;
     }
-    .fff:hover{
-      border: 2px solid red ;
+
+    .put:hover {
+      border: 2px solid red;
     }
+
+    .page:hover {
+      border: 1px solid #686868;
+    }
+
     ul {
       list-style-type: none;
       padding: 0;
     }
+
     li {
       margin: 8px 0;
     }
+
     a {
       text-decoration: none;
       color: #333;
     }
+
     a:hover {
       color: #007bff;
     }
