@@ -12,80 +12,69 @@ import { ButtonModule } from 'primeng/button';
   standalone: true,
   imports: [CommonModule, FormsModule, InputTextModule, ButtonModule, Select],
   template: `
-    <div class="questao-card">
-      <div class="questao-header">
-        <div class="grid">
-          <div class="col-8">
-            <input
-              pInputText
-              type="text"
-              class="title-input"
-              placeholder="Digite sua pergunta"
-              [(ngModel)]="questao.descricao"
-              name="descricaoQuestao_{{questao.idQuestao}}"
-            />
-          </div>
-          <div class="col-4">
-            <p-select
-              [options]="tiposQuestao"
-              [(ngModel)]="questao.tipoQuestao"
-              optionLabel="label"
-              optionValue="value"
-              placeholder="Tipo da Questão"
-              (onChange)="onTipoQuestaoChange()"
-            ></p-select>
-          </div>
+    <div class="card">
+      <div class="card-header">
+        <p-button icon="pi pi-trash" styleClass="p-button-danger p-button-text" title="Excluir" (click)="removerQuestao.emit()"></p-button>
+      </div>
+      <div class="card-main pt-4 pb-4">
+          <input
+            pInputText
+            type="text"
+            class="title-input"
+            placeholder="Digite sua pergunta"
+            [(ngModel)]="questao.descricao"
+            name="descricaoQuestao_{{questao.idQuestao}}"
+          />
+        <div >
+          @switch (questao.tipoQuestao) {
+            @case (TipoQuestao.desc) {
+              <textarea pInputTextarea placeholder="Resposta descritiva" [disabled]="true"></textarea>
+            }
+            @case (TipoQuestao.unic) {
+              @for (alternativa of questao.listaAlternativa; track alternativa) {
+                <div class="alternativa">
+                  <input type="radio" [name]="'alternativa_' + questao.idQuestao" [disabled]="true" />
+                  <input pInputText type="text" [(ngModel)]="alternativa.descricao" placeholder="Alternativa" />
+                  <p-button icon="pi pi-trash" (click)="removerAlternativa(alternativa)" styleClass="p-button-danger p-button-text"></p-button>
+                </div>
+              }
+              <p-button icon="pi pi-plus" (click)="adicionarAlternativa()" styleClass="p-button-text"></p-button>
+            }
+            @case (TipoQuestao.mult) {
+              @for (alternativa of questao.listaAlternativa; track alternativa) {
+                <div class="alternativa">
+                  <input type="checkbox" [disabled]="true" />
+                  <input pInputText type="text" [(ngModel)]="alternativa.descricao" placeholder="Alternativa" />
+                  <p-button icon="pi pi-trash" (click)="removerAlternativa(alternativa)" styleClass="p-button-danger p-button-text"></p-button>
+                </div>
+              }
+              <p-button icon="pi pi-plus" (click)="adicionarAlternativa()" styleClass="p-button-text"></p-button>
+            }
+          }
         </div>
       </div>
 
-      <div class="questao-body">
-        @switch (questao.tipoQuestao) {
-          @case (TipoQuestao.desc) {
-            <textarea pInputTextarea placeholder="Resposta descritiva" [disabled]="true"></textarea>
-          }
-          @case (TipoQuestao.unic) {
-            @for (alternativa of questao.listaAlternativa; track alternativa) {
-              <div class="alternativa">
-                <input type="radio" [name]="'alternativa_' + questao.idQuestao" [disabled]="true" />
-                <input pInputText type="text" [(ngModel)]="alternativa.descricao" placeholder="Alternativa" />
-                <p-button icon="pi pi-trash" (click)="removerAlternativa(alternativa)" styleClass="p-button-danger p-button-text"></p-button>
-              </div>
-            }
-            <p-button icon="pi pi-plus" (click)="adicionarAlternativa()" styleClass="p-button-text"></p-button>
-          }
-          @case (TipoQuestao.mult) {
-            @for (alternativa of questao.listaAlternativa; track alternativa) {
-              <div class="alternativa">
-                <input type="checkbox" [disabled]="true" />
-                <input pInputText type="text" [(ngModel)]="alternativa.descricao" placeholder="Alternativa" />
-                <p-button icon="pi pi-trash" (click)="removerAlternativa(alternativa)" styleClass="p-button-danger p-button-text"></p-button>
-              </div>
-            }
-            <p-button icon="pi pi-plus" (click)="adicionarAlternativa()" styleClass="p-button-text"></p-button>
-          }
-        }
-      </div>
-
-      <div class="questao-footer">
-        <div class="questao-actions">
-          <p-button icon="pi pi-copy" styleClass="p-button-text" title="Duplicar"></p-button>
-          <p-button icon="pi pi-trash" styleClass="p-button-danger p-button-text" title="Excluir" (click)="removerQuestao.emit()"></p-button>
-        </div>
+      <div class="flex justify-items-star">
+        <p-select
+          [options]="tiposQuestao"
+          [(ngModel)]="questao.tipoQuestao"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Tipo da Questão"
+          (onChange)="onTipoQuestaoChange()"
+        ></p-select>
       </div>
     </div>
   `,
   styles: [`
-    .questao-card {
+    .card {
       border: 1px solid #eee;
       padding: 1rem;
       margin-top: 1rem;
       border-radius: 5px;
       background-color: #f9f9f9;
     }
-    .questao-header, .questao-footer {
-      padding: 0.5rem 0;
-    }
-    .questao-footer {
+    .card-header {
       display: flex;
       justify-content: flex-end;
     }
