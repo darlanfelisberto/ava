@@ -2,8 +2,16 @@ export interface QuestionarioDTO{
     idQuestionario?: number;
     nome?: string;
     descricao?: string;
+    paginas?: PaginaDTO[];
     listaQuestao?: QuestaoDTO[];
     respostaQuestionario?:RespostaQuestionarioDTO;
+}
+
+export interface PaginaDTO {
+    idPagina?: number;
+    nome?: string;
+    descricao?: string;
+    questoes?: QuestaoDTO[];
 }
 
 export interface QuestaoDTO{

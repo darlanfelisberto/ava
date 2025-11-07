@@ -3,13 +3,16 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
-import { QuestionarioDTO } from '../model';
+import { PaginaDTO, QuestionarioDTO } from '../model';
 import { QuestionarioService } from '../services/questionario.service';
+import { ValidacaoInputComponent } from '../componentes/validacao-input.component';
+import { CadastroPaginaComponent } from './cadastro-pagina.component';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-cadastro-questionario',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ValidacaoInputComponent, CadastroPaginaComponent, ButtonModule],
   template: `
     <div class="container">
       <form #questionarioForm="ngForm" (ngSubmit)="onSubmit(questionarioForm)">
@@ -22,11 +25,7 @@ import { QuestionarioService } from '../services/questionario.service';
           required
           #nomeField="ngModel"
         />
-        @if (submitted && nomeField.invalid) {
-          <div class="error-message">
-            Nome do questionário é obrigatório.
-          </div>
-        }
+        <app-validacao-input [control]="nomeField.control" nomeDoCampo="Nome do Questionário"></app-validacao-input>
 
         <textarea
           class="desc-input"
@@ -38,19 +37,22 @@ import { QuestionarioService } from '../services/questionario.service';
           required
           #descricaoField="ngModel"
         ></textarea>
-        @if (submitted && descricaoField.invalid) {
-          <div class="error-message">
-            Descrição do questionário é obrigatória.
-          </div>
-        }
-        <button type="submit">Salvar Questionário</button>
+        <app-validacao-input [control]="descricaoField.control" nomeDoCampo="Descrição do Questionário"></app-validacao-input>
+
       </form>
+
+      <div class="pages-section">
+        @for (pagina of questionario.paginas; track pagina) {
+          <app-cadastro-pagina [pagina]="pagina" (removerPagina)="removerPagina($event)"></app-cadastro-pagina>
+        }
+        <p-button (click)="adicionarPagina()" label="Nova Página"></p-button>
+      </div>
     </div>
   `,
   styles: [
     `
       .container {
-        padding: 2rem;
+        padding: 4rem;
         max-width: 800px;
         margin: auto;
       }
@@ -68,10 +70,7 @@ import { QuestionarioService } from '../services/questionario.service';
       .title-input:focus, .desc-input:focus {
         border-bottom-color: #dee2e6;
       }
-      .title-input.ng-invalid, .desc-input.ng-invalid {
-        /* Highlight invalid fields only after submit attempt */
-      }
-      .submitted .title-input.ng-invalid, .submitted .desc-input.ng-invalid {
+      .title-input.ng-invalid.ng-touched, .desc-input.ng-invalid.ng-touched {
          border-bottom-color: red;
       }
       .title-input {
@@ -86,27 +85,22 @@ import { QuestionarioService } from '../services/questionario.service';
         overflow: hidden;
         color: #495057;
       }
-      .error-message {
-        color: red;
-        font-size: 0.875em;
-        margin-top: -5px;
-        margin-bottom: 10px;
+      ::placeholder {
+        color: #adb5bd;
+        opacity: 1; /* Firefox */
       }
-      button[type="submit"] {
-        margin-top: 20px;
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
+
+      ::-ms-input-placeholder { /* Edge */
+        color: #adb5bd;
+      }
+      .pages-section {
+        margin-top: 2rem;
       }
     `
   ]
 })
 export class CadastroQuestionarioComponent {
-  questionario: QuestionarioDTO = {};
-  submitted = false;
+  questionario: QuestionarioDTO = { paginas: [] };
 
   private questionarioService = inject(QuestionarioService);
   private router = inject(Router);
@@ -118,12 +112,20 @@ export class CadastroQuestionarioComponent {
   }
 
   onSubmit(form: NgForm): void {
-    this.submitted = true;
-
     if (form.invalid) {
-      console.log('Formulário Inválido!');
+      Object.values(form.controls).forEach(control => {
+        control.markAsTouched();
+      });
       return;
     }
+    // TODO: Implementar a lógica de salvar o questionário
+  }
 
+  adicionarPagina(): void {
+    this.questionario.paginas?.push({ questoes: [] } as PaginaDTO);
+  }
+
+  removerPagina(pagina: PaginaDTO): void {
+    this.questionario.paginas = this.questionario.paginas?.filter(p => p !== pagina);
   }
 }
