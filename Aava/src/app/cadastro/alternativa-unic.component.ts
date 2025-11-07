@@ -13,11 +13,11 @@ import { InputTextModule } from 'primeng/inputtext';
     @for (alternativa of questao.listaAlternativa; track alternativa) {
       <div class="alternativa">
         <input type="radio" [name]="'alternativa_' + questao.idQuestao" [disabled]="true" />
-        <input pInputText type="text" [(ngModel)]="alternativa.descricao" placeholder="Alternativa" />
+        <input pInputText type="text" [(ngModel)]="alternativa.descricao" placeholder="Alternativa" class="title-input" />
         <p-button icon="pi pi-trash" (click)="removerAlternativa(alternativa)" styleClass="p-button-danger p-button-text"></p-button>
       </div>
     }
-    <p-button icon="pi pi-plus" (click)="adicionarAlternativa()" styleClass="p-button-text"></p-button>
+    <p-button icon="pi pi-plus" (click)="adicionarAlternativa()" styleClass="p-button-text add-button"></p-button>
   `,
   styles: [`
     .alternativa {
@@ -28,6 +28,42 @@ import { InputTextModule } from 'primeng/inputtext';
     .alternativa input[type="radio"] {
       margin-right: 0.5rem;
     }
+    .alternativa p-button {
+      visibility: hidden;
+    }
+    .alternativa:hover p-button {
+      visibility: visible;
+    }
+    .add-button {
+      visibility: hidden;
+    }
+    :host-context(.card:hover) .add-button {
+      visibility: visible;
+    }
+    .title-input {
+        width: 100%;
+        border: none;
+        background-color: transparent;
+        outline: none;
+        padding: 10px 0;
+        border-bottom: 2px solid transparent;
+        transition: border-bottom-color 0.3s;
+        box-shadow: none;
+        font-size: 1rem;
+        font-weight: 400;
+        color: #212529;
+      }
+      .title-input:hover, .title-input:focus {
+        border-bottom-color: #dee2e6;
+      }
+      ::placeholder {
+        color: #adb5bd;
+        opacity: 1; /* Firefox */
+      }
+
+      ::-ms-input-placeholder { /* Edge */
+        color: #adb5bd;
+      }
   `]
 })
 export class AlternativaUnicComponent {
