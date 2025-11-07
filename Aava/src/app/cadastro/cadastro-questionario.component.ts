@@ -22,7 +22,7 @@ import { QuestionarioService } from '../services/questionario.service';
           required
           #nomeField="ngModel"
         />
-        @if (nomeField.invalid && (nomeField.dirty || nomeField.touched)) {
+        @if (submitted && nomeField.invalid) {
           <div class="error-message">
             Nome do questionário é obrigatório.
           </div>
@@ -38,12 +38,12 @@ import { QuestionarioService } from '../services/questionario.service';
           required
           #descricaoField="ngModel"
         ></textarea>
-        @if (descricaoField.invalid && (descricaoField.dirty || descricaoField.touched)) {
+        @if (submitted && descricaoField.invalid) {
           <div class="error-message">
             Descrição do questionário é obrigatória.
           </div>
         }
-        <button type="submit" [disabled]="questionarioForm.invalid">Salvar Questionário</button>
+        <button type="submit">Salvar Questionário</button>
       </form>
     </div>
   `,
@@ -68,8 +68,11 @@ import { QuestionarioService } from '../services/questionario.service';
       .title-input:focus, .desc-input:focus {
         border-bottom-color: #dee2e6;
       }
-      .title-input.ng-invalid.ng-touched, .desc-input.ng-invalid.ng-touched {
-        border-bottom-color: red;
+      .title-input.ng-invalid, .desc-input.ng-invalid {
+        /* Highlight invalid fields only after submit attempt */
+      }
+      .submitted .title-input.ng-invalid, .submitted .desc-input.ng-invalid {
+         border-bottom-color: red;
       }
       .title-input {
         font-size: 2.5rem;
@@ -98,15 +101,12 @@ import { QuestionarioService } from '../services/questionario.service';
         border-radius: 5px;
         cursor: pointer;
       }
-      button[type="submit"]:disabled {
-        background-color: #cccccc;
-        cursor: not-allowed;
-      }
     `
   ]
 })
 export class CadastroQuestionarioComponent {
   questionario: QuestionarioDTO = {};
+  submitted = false;
 
   private questionarioService = inject(QuestionarioService);
   private router = inject(Router);
@@ -118,13 +118,12 @@ export class CadastroQuestionarioComponent {
   }
 
   onSubmit(form: NgForm): void {
+    this.submitted = true;
+
     if (form.invalid) {
-      Object.keys(form.controls).forEach(field => {
-        const control = form.control.get(field);
-        control?.markAsTouched({ onlySelf: true });
-      });
       console.log('Formulário Inválido!');
       return;
     }
+
   }
 }
