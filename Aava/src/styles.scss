@@ -10,3 +10,34 @@
 ::-ms-input-placeholder { /* Edge */
   color: #adb5bd;
 }
+
+.label-obri{
+  color: red;
+}
+
+.title-input.ng-invalid.ng-touched, .desc-input.ng-invalid.ng-touched {
+  border-bottom-color: red;
+}
+
+.title-input {
+    color: #212529;
+    width: 100%;
+    border: none;
+    background-color: transparent;
+    outline: none;
+    border-bottom: 2px solid transparent;
+    transition: border-bottom-color 0.3s;
+    box-shadow: none;
+  }
+.title-input:hover, .desc-input:hover,
+.title-input:focus, .desc-input:focus {
+  border-bottom-color: #dee2e6;
+}
+
+.desc-input {
+  font-size: 1.25rem;
+  color: #495057;
+  field-sizing: content;
+  overflow-y: auto; /* Required if max-height is set to show scrollbar */
+}
+

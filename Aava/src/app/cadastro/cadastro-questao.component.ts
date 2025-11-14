@@ -26,33 +26,39 @@ import { ValidacaoInputComponent } from '../componentes/validacao-input.componen
   template: `
     <div class="card" [formGroup]="questaoFormGroup">
       <div class="card-header">
-        <p-button icon="pi pi-trash" styleClass="p-button-danger p-button-text" title="Excluir" (click)="removerQuestao.emit()" type="button"></p-button>
+        <p-button icon="pi pi-trash" styleClass="p-button-danger p-button-text" title="Excluir"
+                  (click)="removerQuestao.emit()" type="button"></p-button>
       </div>
-      <div class="card-main pt-4 pb-4">
-          <div class="flex">
-            <span class="question-index">{{pageIndex + 1}}.{{totalPreviousQuestions + questionIndex + 1}}.</span>
-            <input
-              pInputText
-              type="text"
-              class="title-input"
-              placeholder="Enunciado da Questão"
-              formControlName="descricao"
-            />
-          </div>
-          <app-validacao-input [control]="questaoFormGroup.get('descricao')" nomeDoCampo="Enunciado da Questão"></app-validacao-input>
-        <div formArrayName="listaAlternativa">
-          @switch (questaoFormGroup.get('tipoQuestao')?.value) {
-            @case (TipoQuestao.desc) {
-              <app-alternativa-desc></app-alternativa-desc>
-            }
-            @case (TipoQuestao.unic) {
-              <app-alternativa-escolha [alternativasArray]="alternativas" [tipo]="TipoQuestao.unic"></app-alternativa-escolha>
-            }
-            @case (TipoQuestao.mult) {
-              <app-alternativa-escolha [alternativasArray]="alternativas" [tipo]="TipoQuestao.mult"></app-alternativa-escolha>
-            }
-          }
+      <div class="card-main flex">
+        <div class="main-index flex">
+          <span class="question-index">{{ pageIndex + 1 }}.{{ totalPreviousQuestions + questionIndex + 1 }}.</span>
         </div>
+        <div class="w-full">
+          <input
+            type="text"
+            class="title-input "
+            placeholder="Enunciado da Questão"
+            formControlName="descricao"
+          />
+          <app-validacao-input [control]="questaoFormGroup.get('descricao')"
+                               nomeDoCampo="Enunciado da Questão"></app-validacao-input>
+          <div formArrayName="listaAlternativa">
+            @switch (questaoFormGroup.get('tipoQuestao')?.value) {
+              @case (TipoQuestao.desc) {
+                <app-alternativa-desc></app-alternativa-desc>
+              }
+              @case (TipoQuestao.unic) {
+                <app-alternativa-escolha [alternativasArray]="alternativas"
+                                         [tipo]="TipoQuestao.unic"></app-alternativa-escolha>
+              }
+              @case (TipoQuestao.mult) {
+                <app-alternativa-escolha [alternativasArray]="alternativas"
+                                         [tipo]="TipoQuestao.mult"></app-alternativa-escolha>
+              }
+            }
+          </div>
+        </div>
+
       </div>
 
       <div class="card-footer flex justify-items-star">
@@ -64,7 +70,8 @@ import { ValidacaoInputComponent } from '../componentes/validacao-input.componen
           placeholder="Tipo da Questão"
           (onChange)="onTipoQuestaoChange()"
         ></p-select>
-        <app-validacao-input [control]="questaoFormGroup.get('tipoQuestao')" nomeDoCampo="Tipo da Questão"></app-validacao-input>
+        <app-validacao-input [control]="questaoFormGroup.get('tipoQuestao')"
+                             nomeDoCampo="Tipo da Questão"></app-validacao-input>
       </div>
     </div>
   `,
@@ -86,36 +93,11 @@ import { ValidacaoInputComponent } from '../componentes/validacao-input.componen
     .card:hover .card-header p-button, .card:hover .card-footer {
       visibility: visible;
     }
-    .title-input {
-        width: 100%;
-        border: none;
-        background-color: transparent;
-        outline: none;
-        padding: 10px 0;
-        border-bottom: 2px solid transparent;
-        transition: border-bottom-color 0.3s;
-        box-shadow: none;
-        font-size: 1rem;
-        font-weight: 400;
-        color: #212529;
-      }
-      .title-input:hover, .title-input:focus {
-        border-bottom-color: #dee2e6;
-      }
-      ::placeholder {
-        color: #adb5bd;
-        opacity: 1; /* Firefox */
-      }
-
-      ::-ms-input-placeholder { /* Edge */
-        color: #adb5bd;
-      }
     .question-index {
       font-size: 1rem;
       font-weight: 400;
       color: #212529;
       margin-right: 0.5rem;
-      padding-top: 10px;
     }
   `]
 })

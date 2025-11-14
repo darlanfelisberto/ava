@@ -19,7 +19,7 @@ import { TooltipModule } from 'primeng/tooltip';
       <form [formGroup]="questionarioForm" (ngSubmit)="onSubmit()">
         <input
           type="text"
-          class="title-input"
+          class="title-input text-3xl font-medium"
           placeholder="Nome do Questionário"
           formControlName="nome"
         />
@@ -30,13 +30,11 @@ import { TooltipModule } from 'primeng/tooltip';
           placeholder="Descrição do Questionário"
           formControlName="descricao"
           rows="1"
-          (input)="autoGrow($event)"
         ></textarea>
-        <app-validacao-input [control]="questionarioForm.get('descricao')" nomeDoCampo="Descrição do Questionário"></app-validacao-input>
 
         <div class="pages-section" formArrayName="paginas">
           @for (pagina of paginaControls; track pagina; let i = $index) {
-            <app-cadastro-pagina [paginaFormGroup]="pagina" [pageIndex]="i" (removerPagina)="removerPagina(i)"></app-cadastro-pagina>
+            <app-cadastro-pagina [paginaFormGroup]="pagina" [pageIndex]="i" [totalPreviousQuestions]="getTotalPreviousQuestions(i)" (removerPagina)="removerPagina(i)"></app-cadastro-pagina>
           }
         </div>
 
@@ -51,46 +49,10 @@ import { TooltipModule } from 'primeng/tooltip';
     `
       .container {
         padding: 4rem;
-        max-width: 800px;
+        max-width: 1000px;
         margin: auto;
       }
-      .title-input, .desc-input {
-        width: 100%;
-        border: none;
-        background-color: transparent;
-        outline: none;
-        padding: 10px 0;
-        border-bottom: 2px solid transparent;
-        transition: border-bottom-color 0.3s;
-        box-shadow: none;
-      }
-      .title-input:hover, .desc-input:hover,
-      .title-input:focus, .desc-input:focus {
-        border-bottom-color: #dee2e6;
-      }
-      .title-input.ng-invalid.ng-touched, .desc-input.ng-invalid.ng-touched {
-         border-bottom-color: red;
-      }
-      .title-input {
-        font-size: 2.5rem;
-        font-weight: 500;
-        line-height: 1.2;
-        color: #212529;
-      }
-      .desc-input {
-        font-size: 1.25rem;
-        resize: none;
-        overflow: hidden;
-        color: #495057;
-      }
-      ::placeholder {
-        color: #adb5bd;
-        opacity: 1; /* Firefox */
-      }
 
-      ::-ms-input-placeholder { /* Edge */
-        color: #adb5bd;
-      }
       .pages-section {
         margin-top: 2rem;
       }
@@ -116,7 +78,7 @@ export class CadastroQuestionarioComponent implements OnInit {
   ngOnInit(): void {
     this.questionarioForm = this.fb.group({
       nome: ['', Validators.required],
-      descricao: ['', Validators.required],
+      descricao: [''],
       paginas: this.fb.array([])
     });
   }
@@ -129,12 +91,6 @@ export class CadastroQuestionarioComponent implements OnInit {
     return (this.questionarioForm.get('paginas') as FormArray).controls as FormGroup[];
   }
 
-  autoGrow(event: any): void {
-    const element = event.target;
-    element.style.height = 'auto';
-    element.style.height = (element.scrollHeight) + 'px';
-  }
-
   onSubmit(): void {
     if (this.questionarioForm.invalid) {
       this.questionarioForm.markAllAsTouched();
@@ -142,7 +98,6 @@ export class CadastroQuestionarioComponent implements OnInit {
     }
     // TODO: Implementar a lógica de salvar o questionário
     console.log(this.questionarioForm.value);
-    console.log(this.questionarioForm.getRawValue());
   }
 
   adicionarPagina(): void {
