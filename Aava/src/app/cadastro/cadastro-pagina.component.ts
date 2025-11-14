@@ -1,7 +1,7 @@
 
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
 import { PaginaDTO, QuestaoDTO } from '../model';
 import { CadastroQuestaoComponent } from './cadastro-questao.component';
 import { ButtonModule } from 'primeng/button';
@@ -13,11 +13,11 @@ import { ValidacaoInputComponent } from '../componentes/validacao-input.componen
 @Component({
   selector: 'app-cadastro-pagina',
   standalone: true,
-  imports: [CommonModule, FormsModule, CadastroQuestaoComponent, ButtonModule, MenuModule,  InputTextModule, ValidacaoInputComponent],
+  imports: [CommonModule, ReactiveFormsModule, CadastroQuestaoComponent, ButtonModule, MenuModule,  InputTextModule, ValidacaoInputComponent],
   template: `
-    <div class="pagina-card">
+    <div class="pagina-card" [formGroup]="paginaFormGroup">
       <div class="pagina-actions">
-        <p-button icon="pi pi-trash" (click)="removerPagina.emit(pagina)" styleClass="p-button-danger p-button-text"></p-button>
+        <p-button icon="pi pi-trash" (click)="removerPagina.emit()" styleClass="p-button-danger p-button-text" type="button"></p-button>
       </div>
       <div class="pagina-header">
         <span class="page-index">{{pageIndex + 1}}.</span>
@@ -25,33 +25,27 @@ import { ValidacaoInputComponent } from '../componentes/validacao-input.componen
           type="text"
           class="title-input"
           placeholder="Nome da Página"
-          [(ngModel)]="pagina.nome"
-          name="nomePagina_{{pageIndex}}"
-          required
-          #nomePaginaField="ngModel"
+          formControlName="nome"
         />
-        <app-validacao-input [control]="nomePaginaField.control" nomeDoCampo="Nome da Página"></app-validacao-input>
+        <app-validacao-input [control]="paginaFormGroup.get('nome')" nomeDoCampo="Nome da Página"></app-validacao-input>
       </div>
       <textarea
         class="desc-input"
         placeholder="Descrição da Página"
-        [(ngModel)]="pagina.descricao"
-        name="descricaoPagina_{{pageIndex}}"
+        formControlName="descricao"
         rows="1"
-        required
-        #descPaginaField="ngModel"
       ></textarea>
-      <app-validacao-input [control]="descPaginaField.control" nomeDoCampo="Descrição da Página"></app-validacao-input>
+      <app-validacao-input [control]="paginaFormGroup.get('descricao')" nomeDoCampo="Descrição da Página"></app-validacao-input>
 
-      <div class="mt-1">
-        @for (questao of pagina.questoes; track questao; let i = $index) {
-          <app-cadastro-questao [questao]="questao" (removerQuestao)="removerQuestao(questao)" [pageIndex]="pageIndex" [questionIndex]="i" [totalPreviousQuestions]="totalPreviousQuestions" (alternativaAdicionada)="onAlternativaAdicionada($event)"></app-cadastro-questao>
+      <div class="mt-1" formArrayName="questoes">
+        @for (questao of questaoControls; track questao; let i = $index) {
+          <app-cadastro-questao [questaoFormGroup]="questao" [pageIndex]="pageIndex" [questionIndex]="i" [totalPreviousQuestions]="totalPreviousQuestions" (removerQuestao)="removerQuestao(i)"></app-cadastro-questao>
         }
       </div>
 
       <div class="pagina-footer">
-        <p-button icon="pi pi-plus-circle" (click)="adicionarQuestao()" styleClass="p-button-text" title="Adicionar Questão"></p-button>
-        <p-button icon="pi pi-search" styleClass="p-button-text" title="Buscar Questão"></p-button>
+        <p-button icon="pi pi-plus-circle" (click)="adicionarQuestao()" styleClass="p-button-text" title="Adicionar Questão" type="button"></p-button>
+        <p-button icon="pi pi-search" styleClass="p-button-text" title="Buscar Questão" type="button"></p-button>
       </div>
     </div>
   `,
@@ -123,24 +117,32 @@ import { ValidacaoInputComponent } from '../componentes/validacao-input.componen
   `]
 })
 export class CadastroPaginaComponent {
-  @Input() pagina: PaginaDTO = { questoes: [] };
+  @Input() paginaFormGroup!: FormGroup;
   @Input() pageIndex!: number;
   @Input() totalPreviousQuestions!: number;
-  @Output() removerPagina = new EventEmitter<PaginaDTO>();
-  @Output() questaoAdicionada = new EventEmitter<{ pageIndex: number, questionIndex: number }>();
-  @Output() alternativaAdicionada = new EventEmitter<{ pageIndex: number, questionIndex: number, altIndex: number }>();
+  @Output() removerPagina = new EventEmitter<void>();
+
+  private fb = inject(FormBuilder);
+
+  get questoes() {
+    return this.paginaFormGroup.get('questoes') as FormArray;
+  }
+
+  get questaoControls() {
+    return (this.paginaFormGroup.get('questoes') as FormArray).controls as FormGroup[];
+  }
 
   adicionarQuestao(): void {
-    this.pagina.questoes?.push({ resposta: [], listaAlternativa: [] } as QuestaoDTO);
-    const newQuestionIndex = (this.pagina.questoes?.length ?? 0) - 1;
-    this.questaoAdicionada.emit({ pageIndex: this.pageIndex, questionIndex: newQuestionIndex });
+    const questaoForm = this.fb.group({
+      descricao: ['', Validators.required],
+      tipoQuestao: ['', Validators.required],
+      listaAlternativa: this.fb.array([])
+    });
+    this.questoes.push(questaoForm);
+    questaoForm.markAllAsTouched();
   }
 
-  removerQuestao(questao: QuestaoDTO) {
-    this.pagina.questoes = this.pagina.questoes?.filter(q => q !== questao);
-  }
-
-  onAlternativaAdicionada(event: { pageIndex: number, questionIndex: number, altIndex: number }) {
-    this.alternativaAdicionada.emit(event);
+  removerQuestao(index: number) {
+    this.questoes.removeAt(index);
   }
 }

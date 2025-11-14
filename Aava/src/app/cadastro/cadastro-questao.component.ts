@@ -1,7 +1,7 @@
 
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
 import { QuestaoDTO, TipoQuestao, AlternativaDTO } from '../model';
 import { Select } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
@@ -15,7 +15,7 @@ import { ValidacaoInputComponent } from '../componentes/validacao-input.componen
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
     InputTextModule,
     ButtonModule,
     Select,
@@ -24,9 +24,9 @@ import { ValidacaoInputComponent } from '../componentes/validacao-input.componen
     ValidacaoInputComponent
   ],
   template: `
-    <div class="card">
+    <div class="card" [formGroup]="questaoFormGroup">
       <div class="card-header">
-        <p-button icon="pi pi-trash" styleClass="p-button-danger p-button-text" title="Excluir" (click)="removerQuestao.emit()"></p-button>
+        <p-button icon="pi pi-trash" styleClass="p-button-danger p-button-text" title="Excluir" (click)="removerQuestao.emit()" type="button"></p-button>
       </div>
       <div class="card-main pt-4 pb-4">
           <div class="flex">
@@ -36,23 +36,20 @@ import { ValidacaoInputComponent } from '../componentes/validacao-input.componen
               type="text"
               class="title-input"
               placeholder="Enunciado da Questão"
-              [(ngModel)]="questao.descricao"
-              name="descricaoQuestao_{{pageIndex}}_{{questionIndex}}"
-              required
-              #descQuestao="ngModel"
+              formControlName="descricao"
             />
           </div>
-          <app-validacao-input [control]="descQuestao.control" nomeDoCampo="Enunciado da Questão"></app-validacao-input>
-        <div >
-          @switch (questao.tipoQuestao) {
+          <app-validacao-input [control]="questaoFormGroup.get('descricao')" nomeDoCampo="Enunciado da Questão"></app-validacao-input>
+        <div formArrayName="listaAlternativa">
+          @switch (questaoFormGroup.get('tipoQuestao')?.value) {
             @case (TipoQuestao.desc) {
-              <app-alternativa-desc [questao]="questao" ></app-alternativa-desc>
+              <app-alternativa-desc></app-alternativa-desc>
             }
             @case (TipoQuestao.unic) {
-              <app-alternativa-escolha [questao]="questao" [tipo]="TipoQuestao.unic" [pageIndex]="pageIndex" [questionIndex]="questionIndex" (alternativaAdicionada)="onAlternativaAdicionada($event)"></app-alternativa-escolha>
+              <app-alternativa-escolha [alternativasArray]="alternativas" [tipo]="TipoQuestao.unic"></app-alternativa-escolha>
             }
             @case (TipoQuestao.mult) {
-              <app-alternativa-escolha [questao]="questao" [tipo]="TipoQuestao.mult" [pageIndex]="pageIndex" [questionIndex]="questionIndex" (alternativaAdicionada)="onAlternativaAdicionada($event)"></app-alternativa-escolha>
+              <app-alternativa-escolha [alternativasArray]="alternativas" [tipo]="TipoQuestao.mult"></app-alternativa-escolha>
             }
           }
         </div>
@@ -61,16 +58,13 @@ import { ValidacaoInputComponent } from '../componentes/validacao-input.componen
       <div class="card-footer flex justify-items-star">
         <p-select
           [options]="tiposQuestao"
-          [(ngModel)]="questao.tipoQuestao"
+          formControlName="tipoQuestao"
           optionLabel="label"
           optionValue="value"
           placeholder="Tipo da Questão"
           (onChange)="onTipoQuestaoChange()"
-          name="tipoQuestao_{{pageIndex}}_{{questionIndex}}"
-          required
-          #tipoQuestaoField="ngModel"
         ></p-select>
-        <app-validacao-input [control]="tipoQuestaoField.control" nomeDoCampo="Tipo da Questão"></app-validacao-input>
+        <app-validacao-input [control]="questaoFormGroup.get('tipoQuestao')" nomeDoCampo="Tipo da Questão"></app-validacao-input>
       </div>
     </div>
   `,
@@ -126,12 +120,13 @@ import { ValidacaoInputComponent } from '../componentes/validacao-input.componen
   `]
 })
 export class CadastroQuestaoComponent {
-  @Input() questao: QuestaoDTO = { resposta: [], listaAlternativa: [] };
+  @Input() questaoFormGroup!: FormGroup;
   @Input() pageIndex!: number;
   @Input() questionIndex!: number;
   @Input() totalPreviousQuestions!: number;
   @Output() removerQuestao = new EventEmitter<void>();
-  @Output() alternativaAdicionada = new EventEmitter<{ pageIndex: number, questionIndex: number, altIndex: number }>();
+
+  private fb = inject(FormBuilder);
 
   tiposQuestao = [
     { label: 'Descritiva', value: TipoQuestao.desc },
@@ -141,15 +136,15 @@ export class CadastroQuestaoComponent {
 
   TipoQuestao = TipoQuestao;
 
-  onTipoQuestaoChange() {
-    if (this.questao.tipoQuestao === TipoQuestao.desc) {
-      this.questao.listaAlternativa = [];
-    } else if (!this.questao.listaAlternativa || this.questao.listaAlternativa.length === 0) {
-      this.questao.listaAlternativa = [{} as AlternativaDTO];
-    }
+  get alternativas() {
+    return this.questaoFormGroup.get('listaAlternativa') as FormArray;
   }
 
-  onAlternativaAdicionada(event: { pageIndex: number, questionIndex: number, altIndex: number }) {
-    this.alternativaAdicionada.emit(event);
+  onTipoQuestaoChange() {
+    this.alternativas.clear();
+    const tipo = this.questaoFormGroup.get('tipoQuestao')?.value;
+    if (tipo === TipoQuestao.unic || tipo === TipoQuestao.mult) {
+      this.alternativas.push(this.fb.group({ descricao: ['', Validators.required] }));
+    }
   }
 }

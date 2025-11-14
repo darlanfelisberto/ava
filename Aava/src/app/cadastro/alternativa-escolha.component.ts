@@ -1,6 +1,6 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormArray, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { QuestaoDTO, AlternativaDTO, TipoQuestao } from '../model';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -9,22 +9,21 @@ import { ValidacaoInputComponent } from '../componentes/validacao-input.componen
 @Component({
   selector: 'app-alternativa-escolha',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonModule, InputTextModule, ValidacaoInputComponent],
+  imports: [CommonModule, ReactiveFormsModule, ButtonModule, InputTextModule, ValidacaoInputComponent],
   template: `
-    @for (alternativa of questao.listaAlternativa; track alternativa; let i = $index) {
-      <div class="alternativa">
+    @for (alternativa of alternativaControls; track alternativa; let i = $index) {
+      <div class="alternativa" [formGroup]="alternativa">
         @if (tipo === TipoQuestao.unic) {
-          <input type="radio" [name]="'alternativa_' + questao.idQuestao" [disabled]="true" />
+          <input type="radio" [name]="'alternativa_' + i" [disabled]="true" />
         } @else {
           <input type="checkbox" [disabled]="true" />
         }
-        <input pInputText type="text" [(ngModel)]="alternativa.descricao" placeholder="Alternativa" class="title-input"
-               name="alternativa_{{pageIndex}}_{{questionIndex}}_{{i}}" required #altField="ngModel" />
-        <p-button icon="pi pi-trash" (click)="removerAlternativa(alternativa)" styleClass="p-button-danger p-button-text"></p-button>
-        <app-validacao-input [control]="altField.control" nomeDoCampo="Alternativa"></app-validacao-input>
+        <input pInputText type="text" formControlName="descricao" placeholder="Alternativa" class="title-input" />
+        <p-button icon="pi pi-trash" (click)="removerAlternativa(i)" styleClass="p-button-danger p-button-text" type="button"></p-button>
+        <app-validacao-input [control]="alternativa.get('descricao')" nomeDoCampo="Alternativa"></app-validacao-input>
       </div>
     }
-    <p-button icon="pi pi-plus" (click)="adicionarAlternativa()" styleClass="p-button-text add-button"></p-button>
+    <p-button icon="pi pi-plus" (click)="adicionarAlternativa()" styleClass="p-button-text add-button" type="button"></p-button>
   `,
   styles: [`
     .alternativa {
@@ -74,21 +73,26 @@ import { ValidacaoInputComponent } from '../componentes/validacao-input.componen
   `]
 })
 export class AlternativaEscolhaComponent {
-  @Input() questao!: QuestaoDTO;
+  @Input() alternativasArray!: FormArray;
   @Input() tipo!: TipoQuestao.unic | TipoQuestao.mult;
-  @Input() pageIndex!: number;
-  @Input() questionIndex!: number;
-  @Output() alternativaAdicionada = new EventEmitter<{ pageIndex: number, questionIndex: number, altIndex: number }>();
+
+  private fb = inject(FormBuilder);
 
   TipoQuestao = TipoQuestao;
 
-  adicionarAlternativa() {
-    this.questao.listaAlternativa?.push({} as AlternativaDTO);
-    const newAltIndex = (this.questao.listaAlternativa?.length ?? 0) - 1;
-    this.alternativaAdicionada.emit({ pageIndex: this.pageIndex, questionIndex: this.questionIndex, altIndex: newAltIndex });
+  get alternativaControls() {
+    return this.alternativasArray.controls as FormGroup[];
   }
 
-  removerAlternativa(alternativa: AlternativaDTO) {
-    this.questao.listaAlternativa = this.questao.listaAlternativa?.filter(a => a !== alternativa);
+  adicionarAlternativa() {
+    const alternativaForm = this.fb.group({
+      descricao: ['', Validators.required]
+    });
+    this.alternativasArray.push(alternativaForm);
+    alternativaForm.markAllAsTouched();
+  }
+
+  removerAlternativa(index: number) {
+    this.alternativasArray.removeAt(index);
   }
 }
