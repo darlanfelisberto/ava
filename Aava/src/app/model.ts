@@ -1,5 +1,5 @@
 export interface QuestionarioDTO{
-    idQuestionario?: number;
+    idQuestionario?: string;
     nome?: string;
     descricao?: string;
     paginas?: PaginaDTO[];
@@ -8,14 +8,14 @@ export interface QuestionarioDTO{
 }
 
 export interface PaginaDTO {
-    idPagina?: number;
+    idPagina?: string;
     nome?: string;
     descricao?: string;
     questoes?: QuestaoDTO[];
 }
 
 export interface QuestaoDTO{
-    idQuestao?: number;
+    idQuestao?: string;
     tipoQuestao?: TipoQuestao;
     descricao?: string;
     resposta: string[];
@@ -23,24 +23,24 @@ export interface QuestaoDTO{
 }
 
 export interface AlternativaDTO{
-    idAlternativa?: number;
+    idAlternativa?: string;
     descricao?: string;
 }
 
 export enum TipoQuestao{
-  desc = 1,
-  unic = 2,
-  mult = 3
+  desc,
+  unic,
+  mult
 }
 
 export interface RespostaQuestaoDTO {
-    idQuestao?: number;
-    idRespostaQuestao?: number;
+    idQuestao?: string;
+    idRespostaQuestao?: string;
     listaAlternativa?: AlternativaDTO[];
 }
 
 export interface RespostaQuestionarioDTO {
-    idQuestionario?: number;
-    idRespostaQuestionario?: number;
+    idQuestionario?: string;
+    idRespostaQuestionario?: string;
     listaRespostaQuestao?: RespostaQuestaoDTO[];
 }

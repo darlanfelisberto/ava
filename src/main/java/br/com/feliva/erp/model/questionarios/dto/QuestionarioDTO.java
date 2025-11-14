@@ -6,10 +6,11 @@ import jakarta.persistence.Column;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class QuestionarioDTO {
 
-    public Integer idQuestionario;
+    public UUID idQuestionario;
 
     public String descricao;
 

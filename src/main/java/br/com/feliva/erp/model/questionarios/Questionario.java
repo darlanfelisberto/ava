@@ -5,15 +5,16 @@ import br.com.feliva.sharedClass.db.Model;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "questionario")
-public class Questionario extends Model<Integer> {
+public class Questionario extends Model<UUID> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_questionario")
-    private Integer idQuestionario;
+    private UUID idQuestionario;
 
     @Column(length = 200)
     private String descricao;
@@ -22,15 +23,15 @@ public class Questionario extends Model<Integer> {
     List<Questao> listaQuestao;
 
     @Override
-    public Integer getMMId() {
+    public UUID getMMId() {
         return this.idQuestionario;
     }
 
-    public Integer getIdQuestionario() {
+    public UUID getIdQuestionario() {
         return idQuestionario;
     }
 
-    public void setIdQuestionario(Integer idQuestionario) {
+    public void setIdQuestionario(UUID idQuestionario) {
         this.idQuestionario = idQuestionario;
     }
 

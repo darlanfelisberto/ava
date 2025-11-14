@@ -8,36 +8,44 @@ import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
 import { MenuItem } from 'primeng/api';
 import { InputTextModule } from 'primeng/inputtext';
+import { ValidacaoInputComponent } from '../componentes/validacao-input.component';
 
 @Component({
   selector: 'app-cadastro-pagina',
   standalone: true,
-  imports: [CommonModule, FormsModule, CadastroQuestaoComponent, ButtonModule, MenuModule,  InputTextModule],
+  imports: [CommonModule, FormsModule, CadastroQuestaoComponent, ButtonModule, MenuModule,  InputTextModule, ValidacaoInputComponent],
   template: `
     <div class="pagina-card">
       <div class="pagina-actions">
         <p-button icon="pi pi-trash" (click)="removerPagina.emit(pagina)" styleClass="p-button-danger p-button-text"></p-button>
       </div>
       <div class="pagina-header">
+        <span class="page-index">{{pageIndex + 1}}.</span>
         <input
           type="text"
           class="title-input"
           placeholder="Nome da Página"
           [(ngModel)]="pagina.nome"
-          name="nomePagina_{{pagina.idPagina}}"
+          name="nomePagina_{{pageIndex}}"
+          required
+          #nomePaginaField="ngModel"
         />
+        <app-validacao-input [control]="nomePaginaField.control" nomeDoCampo="Nome da Página"></app-validacao-input>
       </div>
       <textarea
         class="desc-input"
         placeholder="Descrição da Página"
         [(ngModel)]="pagina.descricao"
-        name="descricaoPagina_{{pagina.idPagina}}"
+        name="descricaoPagina_{{pageIndex}}"
         rows="1"
+        required
+        #descPaginaField="ngModel"
       ></textarea>
+      <app-validacao-input [control]="descPaginaField.control" nomeDoCampo="Descrição da Página"></app-validacao-input>
 
       <div class="mt-1">
-        @for (questao of pagina.questoes; track questao) {
-          <app-cadastro-questao [questao]="questao" (removerQuestao)="removerQuestao(questao)"></app-cadastro-questao>
+        @for (questao of pagina.questoes; track questao; let i = $index) {
+          <app-cadastro-questao [questao]="questao" (removerQuestao)="removerQuestao(questao)" [pageIndex]="pageIndex" [questionIndex]="i" [totalPreviousQuestions]="totalPreviousQuestions" (alternativaAdicionada)="onAlternativaAdicionada($event)"></app-cadastro-questao>
         }
       </div>
 
@@ -105,17 +113,34 @@ import { InputTextModule } from 'primeng/inputtext';
         overflow: hidden;
         color: #495057;
       }
+    .page-index {
+      font-size: 1.5rem;
+      font-weight: 500;
+      line-height: 1.2;
+      color: #212529;
+      margin-right: 0.5rem;
+    }
   `]
 })
 export class CadastroPaginaComponent {
   @Input() pagina: PaginaDTO = { questoes: [] };
+  @Input() pageIndex!: number;
+  @Input() totalPreviousQuestions!: number;
   @Output() removerPagina = new EventEmitter<PaginaDTO>();
+  @Output() questaoAdicionada = new EventEmitter<{ pageIndex: number, questionIndex: number }>();
+  @Output() alternativaAdicionada = new EventEmitter<{ pageIndex: number, questionIndex: number, altIndex: number }>();
 
   adicionarQuestao(): void {
     this.pagina.questoes?.push({ resposta: [], listaAlternativa: [] } as QuestaoDTO);
+    const newQuestionIndex = (this.pagina.questoes?.length ?? 0) - 1;
+    this.questaoAdicionada.emit({ pageIndex: this.pageIndex, questionIndex: newQuestionIndex });
   }
 
   removerQuestao(questao: QuestaoDTO) {
     this.pagina.questoes = this.pagina.questoes?.filter(q => q !== questao);
+  }
+
+  onAlternativaAdicionada(event: { pageIndex: number, questionIndex: number, altIndex: number }) {
+    this.alternativaAdicionada.emit(event);
   }
 }

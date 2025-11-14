@@ -13,6 +13,8 @@ import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import java.util.UUID;
+
 @RequestScoped
 @Path("/questionario")
 public class QuestionarioEnd  {
@@ -25,7 +27,7 @@ public class QuestionarioEnd  {
     @Produces(MediaType.APPLICATION_JSON)
     public Response teste(@PathParam("id") String id){
         try {
-            var q = this.questionarioDAO.findById(Integer.parseInt(id));
+            var q = this.questionarioDAO.findById(UUID.fromString(id));
             var dto = new QuestionarioDTO()
                     .inicialize(q)
                     .inicializeQuestoes(q.getListaQuestao());

@@ -1,5 +1,5 @@
 
-import { Component, inject } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
@@ -8,11 +8,12 @@ import { QuestionarioService } from '../services/questionario.service';
 import { ValidacaoInputComponent } from '../componentes/validacao-input.component';
 import { CadastroPaginaComponent } from './cadastro-pagina.component';
 import { ButtonModule } from 'primeng/button';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-cadastro-questionario',
   standalone: true,
-  imports: [CommonModule, FormsModule, ValidacaoInputComponent, CadastroPaginaComponent, ButtonModule],
+  imports: [CommonModule, FormsModule, ValidacaoInputComponent, CadastroPaginaComponent, ButtonModule, TooltipModule],
   template: `
     <div class="container">
       <form #questionarioForm="ngForm" (ngSubmit)="onSubmit(questionarioForm)">
@@ -39,14 +40,17 @@ import { ButtonModule } from 'primeng/button';
         ></textarea>
         <app-validacao-input [control]="descricaoField.control" nomeDoCampo="Descrição do Questionário"></app-validacao-input>
 
-      </form>
+        <div class="pages-section">
+          @for (pagina of questionario.paginas; track pagina; let i = $index) {
+            <app-cadastro-pagina [pagina]="pagina" (removerPagina)="removerPagina($event)" [pageIndex]="i" [totalPreviousQuestions]="getTotalPreviousQuestions(i)" (questaoAdicionada)="onQuestaoAdicionada($event)" (alternativaAdicionada)="onAlternativaAdicionada($event)"></app-cadastro-pagina>
+          }
+        </div>
 
-      <div class="pages-section">
-        @for (pagina of questionario.paginas; track pagina) {
-          <app-cadastro-pagina [pagina]="pagina" (removerPagina)="removerPagina($event)"></app-cadastro-pagina>
-        }
-        <p-button (click)="adicionarPagina()" label="Nova Página"></p-button>
-      </div>
+        <div class="botoes-form">
+            <p-button (click)="adicionarPagina()" icon="pi pi-plus" pTooltip="Nova Página" tooltipPosition="left"></p-button>
+            <p-button type="submit" icon="pi pi-save" [disabled]="!questionarioForm.form.valid" pTooltip="Salvar Questionário" tooltipPosition="left"></p-button>
+        </div>
+      </form>
     </div>
   `,
   styles: [
@@ -96,10 +100,20 @@ import { ButtonModule } from 'primeng/button';
       .pages-section {
         margin-top: 2rem;
       }
+      .botoes-form {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
     `
   ]
 })
 export class CadastroQuestionarioComponent {
+  @ViewChild('questionarioForm') questionarioForm!: NgForm;
   questionario: QuestionarioDTO = { paginas: [] };
 
   private questionarioService = inject(QuestionarioService);
@@ -123,9 +137,41 @@ export class CadastroQuestionarioComponent {
 
   adicionarPagina(): void {
     this.questionario.paginas?.push({ questoes: [] } as PaginaDTO);
+    setTimeout(() => {
+      const newPageIndex = (this.questionario.paginas?.length ?? 0) - 1;
+      const nomePaginaControl = this.questionarioForm.form.get(`nomePagina_${newPageIndex}`);
+      const descPaginaControl = this.questionarioForm.form.get(`descricaoPagina_${newPageIndex}`);
+      nomePaginaControl?.markAsTouched();
+      descPaginaControl?.markAsTouched();
+    });
   }
 
   removerPagina(pagina: PaginaDTO): void {
     this.questionario.paginas = this.questionario.paginas?.filter(p => p !== pagina);
+  }
+
+  onQuestaoAdicionada(event: { pageIndex: number, questionIndex: number }) {
+    setTimeout(() => {
+      const descQuestaoControl = this.questionarioForm.form.get(`descricaoQuestao_${event.pageIndex}_${event.questionIndex}`);
+      const tipoQuestaoControl = this.questionarioForm.form.get(`tipoQuestao_${event.pageIndex}_${event.questionIndex}`);
+      descQuestaoControl?.markAsTouched();
+      tipoQuestaoControl?.markAsTouched();
+    });
+  }
+
+  onAlternativaAdicionada(event: { pageIndex: number, questionIndex: number, altIndex: number }) {
+    setTimeout(() => {
+      const altControl = this.questionarioForm.form.get(`alternativa_${event.pageIndex}_${event.questionIndex}_${event.altIndex}`);
+      altControl?.markAsTouched();
+    });
+  }
+
+  getTotalPreviousQuestions(pageIndex: number): number {
+    let total = 0;
+    for (let i = 0; i < pageIndex; i++) {
+      // @ts-ignore
+      total += this.questionario.paginas[i].questoes?.length ?? 0;
+    }
+    return total;
   }
 }

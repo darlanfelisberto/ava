@@ -8,11 +8,12 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
-public class AlternativaDTO extends Model<Integer>{
+public class AlternativaDTO extends Model<UUID>{
 
-    public Integer idAlternativa;
+    public UUID idAlternativa;
 
     public String descricao;
 
@@ -33,7 +34,7 @@ public class AlternativaDTO extends Model<Integer>{
 
 
     @Override
-    public Integer getMMId() {
+    public UUID getMMId() {
         return this.idAlternativa;
     }
 }

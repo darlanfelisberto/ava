@@ -3,15 +3,16 @@ package br.com.feliva.erp.model.questionarios;
 import br.com.feliva.sharedClass.db.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import java.util.UUID;
 
 @Entity
 @Table(name = "alternativa")
-public class Alternativa extends Model<Integer> {
+public class Alternativa extends Model<UUID> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_alternativa")
-    private Integer idAlternativa;
+    private UUID idAlternativa;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -22,15 +23,15 @@ public class Alternativa extends Model<Integer> {
     private String descricao;
 
     @Override
-    public Integer getMMId() {
+    public UUID getMMId() {
         return this.idAlternativa;
     }
 
-    public Integer getIdAlternativa() {
+    public UUID getIdAlternativa() {
         return idAlternativa;
     }
 
-    public void setIdAlternativa(Integer idAlternativa) {
+    public void setIdAlternativa(UUID idAlternativa) {
         this.idAlternativa = idAlternativa;
     }
 

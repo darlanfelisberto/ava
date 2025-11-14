@@ -8,6 +8,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { AlternativaDescComponent } from './alternativa-desc.component';
 import { AlternativaEscolhaComponent } from './alternativa-escolha.component';
+import { ValidacaoInputComponent } from '../componentes/validacao-input.component';
 
 @Component({
   selector: 'app-cadastro-questao',
@@ -19,7 +20,8 @@ import { AlternativaEscolhaComponent } from './alternativa-escolha.component';
     ButtonModule,
     Select,
     AlternativaDescComponent,
-    AlternativaEscolhaComponent
+    AlternativaEscolhaComponent,
+    ValidacaoInputComponent
   ],
   template: `
     <div class="card">
@@ -27,24 +29,30 @@ import { AlternativaEscolhaComponent } from './alternativa-escolha.component';
         <p-button icon="pi pi-trash" styleClass="p-button-danger p-button-text" title="Excluir" (click)="removerQuestao.emit()"></p-button>
       </div>
       <div class="card-main pt-4 pb-4">
-          <input
-            pInputText
-            type="text"
-            class="title-input"
-            placeholder="Enunciado da Questão"
-            [(ngModel)]="questao.descricao"
-            name="descricaoQuestao_{{questao.idQuestao}}"
-          />
+          <div class="flex">
+            <span class="question-index">{{pageIndex + 1}}.{{totalPreviousQuestions + questionIndex + 1}}.</span>
+            <input
+              pInputText
+              type="text"
+              class="title-input"
+              placeholder="Enunciado da Questão"
+              [(ngModel)]="questao.descricao"
+              name="descricaoQuestao_{{pageIndex}}_{{questionIndex}}"
+              required
+              #descQuestao="ngModel"
+            />
+          </div>
+          <app-validacao-input [control]="descQuestao.control" nomeDoCampo="Enunciado da Questão"></app-validacao-input>
         <div >
           @switch (questao.tipoQuestao) {
             @case (TipoQuestao.desc) {
               <app-alternativa-desc [questao]="questao" ></app-alternativa-desc>
             }
             @case (TipoQuestao.unic) {
-              <app-alternativa-escolha [questao]="questao" [tipo]="TipoQuestao.unic"></app-alternativa-escolha>
+              <app-alternativa-escolha [questao]="questao" [tipo]="TipoQuestao.unic" [pageIndex]="pageIndex" [questionIndex]="questionIndex" (alternativaAdicionada)="onAlternativaAdicionada($event)"></app-alternativa-escolha>
             }
             @case (TipoQuestao.mult) {
-              <app-alternativa-escolha [questao]="questao" [tipo]="TipoQuestao.mult"></app-alternativa-escolha>
+              <app-alternativa-escolha [questao]="questao" [tipo]="TipoQuestao.mult" [pageIndex]="pageIndex" [questionIndex]="questionIndex" (alternativaAdicionada)="onAlternativaAdicionada($event)"></app-alternativa-escolha>
             }
           }
         </div>
@@ -58,7 +66,11 @@ import { AlternativaEscolhaComponent } from './alternativa-escolha.component';
           optionValue="value"
           placeholder="Tipo da Questão"
           (onChange)="onTipoQuestaoChange()"
+          name="tipoQuestao_{{pageIndex}}_{{questionIndex}}"
+          required
+          #tipoQuestaoField="ngModel"
         ></p-select>
+        <app-validacao-input [control]="tipoQuestaoField.control" nomeDoCampo="Tipo da Questão"></app-validacao-input>
       </div>
     </div>
   `,
@@ -104,11 +116,22 @@ import { AlternativaEscolhaComponent } from './alternativa-escolha.component';
       ::-ms-input-placeholder { /* Edge */
         color: #adb5bd;
       }
+    .question-index {
+      font-size: 1rem;
+      font-weight: 400;
+      color: #212529;
+      margin-right: 0.5rem;
+      padding-top: 10px;
+    }
   `]
 })
 export class CadastroQuestaoComponent {
   @Input() questao: QuestaoDTO = { resposta: [], listaAlternativa: [] };
+  @Input() pageIndex!: number;
+  @Input() questionIndex!: number;
+  @Input() totalPreviousQuestions!: number;
   @Output() removerQuestao = new EventEmitter<void>();
+  @Output() alternativaAdicionada = new EventEmitter<{ pageIndex: number, questionIndex: number, altIndex: number }>();
 
   tiposQuestao = [
     { label: 'Descritiva', value: TipoQuestao.desc },
@@ -124,5 +147,9 @@ export class CadastroQuestaoComponent {
     } else if (!this.questao.listaAlternativa || this.questao.listaAlternativa.length === 0) {
       this.questao.listaAlternativa = [{} as AlternativaDTO];
     }
+  }
+
+  onAlternativaAdicionada(event: { pageIndex: number, questionIndex: number, altIndex: number }) {
+    this.alternativaAdicionada.emit(event);
   }
 }

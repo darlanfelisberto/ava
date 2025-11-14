@@ -7,12 +7,12 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class RespostaService extends GenericService<RespostaQuestionarioDTO, number> {
+export class RespostaService extends GenericService<RespostaQuestionarioDTO, string> {
   constructor(http: HttpClient) {
     super(http, 'http://localhost:8080/ava/api/resposta');
   }
 
-  getRespostasByQuestionarioId(idQuestionario: number): Observable<RespostaQuestionarioDTO> {
+  getRespostasByQuestionarioId(idQuestionario: string): Observable<RespostaQuestionarioDTO> {
     return this.http.get<RespostaQuestionarioDTO>(`${this.apiUrl}/questionario/${idQuestionario}`);
   }
 

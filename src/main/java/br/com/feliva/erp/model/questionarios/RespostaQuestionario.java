@@ -6,15 +6,16 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "resposta_questionario")
-public class RespostaQuestionario extends Model<Integer> {
+public class RespostaQuestionario extends Model<UUID> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_resposta_questionario")
-    private Integer idRespostaQuestionario;
+    private UUID idRespostaQuestionario;
 
     @JsonIgnoreProperties({"listaQuestao"})
     @ManyToOne(fetch = FetchType.LAZY)
@@ -25,7 +26,7 @@ public class RespostaQuestionario extends Model<Integer> {
     List<RespostaQuestao> listaRespostaQuestao;
 
     @Override
-    public Integer getMMId() {
+    public UUID getMMId() {
         return this.idRespostaQuestionario;
     }
 
@@ -37,11 +38,11 @@ public class RespostaQuestionario extends Model<Integer> {
         this.questionario = questionario;
     }
 
-    public Integer getIdRespostaQuestionario() {
+    public UUID getIdRespostaQuestionario() {
         return idRespostaQuestionario;
     }
 
-    public void setIdRespostaQuestionario(Integer idRespostaQuestionario) {
+    public void setIdRespostaQuestionario(UUID idRespostaQuestionario) {
         this.idRespostaQuestionario = idRespostaQuestionario;
     }
 

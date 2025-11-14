@@ -9,11 +9,12 @@ import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @RequestScoped
 public class AlternativaDAO extends InjectEntityManagerDAO<Alternativa> {
 
-    public Alternativa findById(Integer id){
+    public Alternativa findById(UUID id){
         try {
             return (Alternativa) this.em.createQuery("""
                 select a from Alternativa a where a.idAlternativa = :id

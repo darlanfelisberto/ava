@@ -9,11 +9,12 @@ import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @RequestScoped
 public class QuestionarioDAO extends InjectEntityManagerDAO<Questionario> {
 
-    public Questionario findById(Integer id){
+    public Questionario findById(UUID id){
         try {
             return (Questionario) this.em.createQuery("select q from Questionario q where q.idQuestionario = :id")
                     .setParameter("id",id)
@@ -24,7 +25,7 @@ public class QuestionarioDAO extends InjectEntityManagerDAO<Questionario> {
     }
 
     @Transactional
-    public RespostaQuestionario findRespostaQuetionario(Integer id){
+    public RespostaQuestionario findRespostaQuetionario(UUID id){
         try {
             this.em.createQuery("""
                 select rqs from RespostaQuestionario rq 

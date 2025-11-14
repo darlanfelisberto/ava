@@ -7,9 +7,10 @@ import br.com.feliva.sharedClass.db.Model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class RespostaQuestaoDTO {
-    public Integer idQuestao;
+    public UUID idQuestao;
 //    public Integer idRespostaQuestao;
     public List<AlternativaDTO> listaAlternativa;
 

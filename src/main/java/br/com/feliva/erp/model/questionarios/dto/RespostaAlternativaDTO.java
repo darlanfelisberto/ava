@@ -7,11 +7,12 @@ import br.com.feliva.sharedClass.db.Model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-public class RespostaAlternativaDTO extends Model<Integer> {
-    public Integer idRespostaAlternativa;
-    public Integer idRespostaQuestao;
-    public Integer idAlternativa;
+public class RespostaAlternativaDTO extends Model<UUID> {
+    public UUID idRespostaAlternativa;
+    public UUID idRespostaQuestao;
+    public UUID idAlternativa;
 
     public static RespostaAlternativaDTO fromAlternativa(RespostaAlternativa a){
         var dto = new RespostaAlternativaDTO();
@@ -40,7 +41,7 @@ public class RespostaAlternativaDTO extends Model<Integer> {
     }
 
     @Override
-    public Integer getMMId() {
+    public UUID getMMId() {
         return idRespostaAlternativa;
     }
 }

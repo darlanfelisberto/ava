@@ -6,15 +6,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "questao")
-public class Questao extends Model<Integer> {
+public class Questao extends Model<UUID> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_questao")
-    private Integer idQuestao;
+    private UUID idQuestao;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_questionario")
@@ -31,15 +32,15 @@ public class Questao extends Model<Integer> {
     List<Alternativa> listaAlternativa;
 
     @Override
-    public Integer getMMId() {
+    public UUID getMMId() {
         return this.idQuestao;
     }
 
-    public Integer getIdQuestao() {
+    public UUID getIdQuestao() {
         return idQuestao;
     }
 
-    public void setIdQuestao(Integer idQuestao) {
+    public void setIdQuestao(UUID idQuestao) {
         this.idQuestao = idQuestao;
     }
 

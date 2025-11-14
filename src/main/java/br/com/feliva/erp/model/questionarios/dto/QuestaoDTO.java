@@ -10,13 +10,14 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
 public class QuestaoDTO {
 
-    public Integer idQuestao;
+    public UUID idQuestao;
 
-    public Integer tipoQuestao;
+    public String tipoQuestao;
 
     public String descricao;
 
@@ -25,7 +26,7 @@ public class QuestaoDTO {
     public QuestaoDTO inicialize(Questao q){
         idQuestao = q.getIdQuestao();
         descricao = q.getDescricao();
-        tipoQuestao = q.getTipoQuestao().getIdTipoQuestao();
+        tipoQuestao = q.getTipoQuestao().getCod();
         listaAlternativa = q.getListaAlternativa();
         return this;
     }

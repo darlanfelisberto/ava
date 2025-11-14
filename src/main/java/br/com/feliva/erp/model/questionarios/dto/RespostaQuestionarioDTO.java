@@ -6,10 +6,11 @@ import br.com.feliva.sharedClass.db.Model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-public class RespostaQuestionarioDTO extends Model<Integer> {
-    public Integer idQuestionario;
-    public Integer idRespostaQuestionario;
+public class RespostaQuestionarioDTO extends Model<UUID> {
+    public UUID idQuestionario;
+    public UUID idRespostaQuestionario;
     public List<RespostaQuestaoDTO> listaRespostaQuestao;
 
     public RespostaQuestionarioDTO inicialize(RespostaQuestionario rq){
@@ -40,7 +41,7 @@ public class RespostaQuestionarioDTO extends Model<Integer> {
 //    }
 
     @Override
-    public Integer getMMId() {
+    public UUID getMMId() {
         return idRespostaQuestionario;
     }
 }

@@ -7,6 +7,8 @@ import br.com.feliva.sharedClass.db.InjectEntityManagerDAO;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.persistence.NoResultException;
 
+import java.util.UUID;
+
 @RequestScoped
 public class RespostaQuestaoDAO extends InjectEntityManagerDAO<RespostaQuestao> {
 
@@ -20,7 +22,7 @@ public class RespostaQuestaoDAO extends InjectEntityManagerDAO<RespostaQuestao> 
         }
     }
 
-    public RespostaQuestao findRespostaQuestaoAndRespQuestionario(Integer idRespQuesti, Integer idQestao){
+    public RespostaQuestao findRespostaQuestaoAndRespQuestionario(UUID idRespQuesti, UUID idQestao){
         try {
             return (RespostaQuestao) this.em.createQuery("""
                 select rq from RespostaQuestao rq

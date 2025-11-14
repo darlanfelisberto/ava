@@ -8,15 +8,16 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "resposta_questao")
-public class RespostaQuestao extends Model<Integer> {
+public class RespostaQuestao extends Model<UUID> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_resposta_questao")
-    private Integer idRespostaQuestao;
+    private UUID idRespostaQuestao;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -32,15 +33,15 @@ public class RespostaQuestao extends Model<Integer> {
     private List<RespostaAlternativa> listaRespostaAlternativa;
 
     @Override
-    public Integer getMMId() {
+    public UUID getMMId() {
         return this.idRespostaQuestao;
     }
 
-    public Integer getIdRespostaQuestao() {
+    public UUID getIdRespostaQuestao() {
         return idRespostaQuestao;
     }
 
-    public void setIdRespostaQuestao(Integer idRespostaQuestao) {
+    public void setIdRespostaQuestao(UUID idRespostaQuestao) {
         this.idRespostaQuestao = idRespostaQuestao;
     }
 

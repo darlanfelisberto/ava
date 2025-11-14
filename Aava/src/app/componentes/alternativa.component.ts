@@ -46,7 +46,7 @@ export class AlternativaComponent implements OnInit{
     this.changeRespAlte.emit({ alternativa: alternativa, checked: input.checked});
   }
 
-  isSelecionada(idAlternativa: number | undefined): boolean {
+  isSelecionada(idAlternativa: string | undefined): boolean {
     if (!idAlternativa || !this.respostaQuestao?.listaAlternativa) {
       return false;
     }

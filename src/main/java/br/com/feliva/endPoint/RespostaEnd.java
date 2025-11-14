@@ -15,6 +15,7 @@ import jakarta.ws.rs.core.Response;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RequestScoped
@@ -41,13 +42,15 @@ public class RespostaEnd {
     @Produces(MediaType.APPLICATION_JSON)
     public Response respostaQuestionario(@PathParam("id") String id){
         try {
-            var q = this.questionarioDAO.findRespostaQuetionario(Integer.parseInt(id));
-
+            var q = this.questionarioDAO.findRespostaQuetionario(UUID.fromString(id));
+            if(q == null){
+                return Response.ok().build();
+            }
             return Response.ok(new RespostaQuestionarioDTO().inicialize(q)).build();
         }catch (Exception e){
             e.printStackTrace();
+            return Response.serverError().build();
         }
-        return Response.ok().build();
     }
 
     @POST

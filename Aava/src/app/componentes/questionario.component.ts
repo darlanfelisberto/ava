@@ -42,8 +42,8 @@ export class QuestionarioComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       forkJoin({
-        questionario: this.questionarioService.getById(+id),
-        respostas: this.respostaService.getRespostasByQuestionarioId(+id)
+        questionario: this.questionarioService.getById(id),
+        respostas: this.respostaService.getRespostasByQuestionarioId(id)
       }).subscribe(({ questionario, respostas }) => {
         this.questionario = questionario;
         if (this.questionario) {
@@ -54,7 +54,7 @@ export class QuestionarioComponent implements OnInit {
     }
   }
 
-  getRespostaParaQuestao(idQuestao: number | undefined): RespostaQuestaoDTO | undefined {
+  getRespostaParaQuestao(idQuestao: string | undefined): RespostaQuestaoDTO | undefined {
     console.log('idQuestao:', idQuestao);
     if (!idQuestao || !this.questionario?.respostaQuestionario?.listaRespostaQuestao) {
       return undefined;
