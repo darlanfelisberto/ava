@@ -3,12 +3,6 @@ package br.com.feliva.servlet;
 import java.io.IOException;
 import java.util.UUID;
 
-import br.com.feliva.dao.CategoriaDAO;
-import br.com.feliva.dao.ProdutoDAO;
-import br.com.feliva.dao.TipoUnidadeDAO;
-import br.com.feliva.erp.model.Categoria;
-import br.com.feliva.erp.model.Produto;
-import br.com.feliva.erp.model.TipoUnidade;
 import jakarta.annotation.Resource;
 import jakarta.inject.Inject;
 import jakarta.persistence.*;
