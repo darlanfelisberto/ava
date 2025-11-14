@@ -132,6 +132,8 @@ export class CadastroQuestionarioComponent {
       });
       return;
     }
+
+    console.log(this.questionario);
     // TODO: Implementar a lógica de salvar o questionário
   }
 
