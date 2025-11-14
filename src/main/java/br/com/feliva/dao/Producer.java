@@ -1,25 +1,12 @@
 package br.com.feliva.dao;
 
-import br.com.feliva.erp.model.TenantIdentifierResolver;
-import br.com.feliva.util.ModelConverter;
 import jakarta.annotation.PostConstruct;
-import jakarta.annotation.Resource;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.Initialized;
 import jakarta.enterprise.context.RequestScoped;
-import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.Disposes;
 import jakarta.enterprise.inject.Produces;
 import jakarta.persistence.*;
 import lombok.extern.log4j.Log4j2;
-import org.flywaydb.core.Flyway;
-import org.flywaydb.core.api.FlywayException;
-import org.flywaydb.core.api.output.MigrateResult;
-import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
-import org.hibernate.engine.spi.SessionFactoryImplementor;
-
-import javax.sql.DataSource;
 
 
 @RequestScoped

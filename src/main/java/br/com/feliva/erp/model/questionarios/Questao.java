@@ -1,6 +1,5 @@
 package br.com.feliva.erp.model.questionarios;
 
-import br.com.feliva.erp.model.Produto;
 import br.com.feliva.sharedClass.db.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

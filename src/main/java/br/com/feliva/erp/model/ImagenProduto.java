@@ -20,10 +20,10 @@ import java.nio.file.Path;
 @Table(name = "imagen_produto")
 public class ImagenProduto extends Imagen {
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "produto_id")
-    private Produto produto;
+//    @JsonIgnore
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "produto_id")
+//    private Produto produto;
 
 
     public byte[] getImage64() {

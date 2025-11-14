@@ -1,6 +1,5 @@
 package br.com.feliva.dao.questionario;
 
-import br.com.feliva.erp.model.Categoria;
 import br.com.feliva.erp.model.questionarios.Questionario;
 import br.com.feliva.erp.model.questionarios.RespostaQuestionario;
 import br.com.feliva.sharedClass.db.InjectEntityManagerDAO;

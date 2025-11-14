@@ -31,7 +31,7 @@ import { ValidacaoInputComponent } from '../componentes/validacao-input.componen
       </div>
       <div class="card-main flex">
         <div class="main-index flex">
-          <span class="question-index">{{ pageIndex + 1 }}.{{ totalPreviousQuestions + questionIndex + 1 }}.</span>
+          <span class="question-index">{{ totalPreviousQuestions + questionIndex + 1 }}.</span>
         </div>
         <div class="w-full">
           <input

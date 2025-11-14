@@ -1,179 +1,179 @@
-<ui:composition template="../template.xhtml"
-      xmlns:h="jakarta.faces.html"
-      xmlns:f="jakarta.faces.core"
-      xmlns:pt="jakarta.faces.passthrough"
-      xmlns:jsf="jakarta.faces"
-      xmlns:ui="jakarta.faces.facelets"
-      xmlns:o="http://omnifaces.org/ui"
-      xmlns:p="primefaces">
-    <ui:define name="content">
+<!--<ui:composition template="../template.xhtml"-->
+<!--      xmlns:h="jakarta.faces.html"-->
+<!--      xmlns:f="jakarta.faces.core"-->
+<!--      xmlns:pt="jakarta.faces.passthrough"-->
+<!--      xmlns:jsf="jakarta.faces"-->
+<!--      xmlns:ui="jakarta.faces.facelets"-->
+<!--      xmlns:o="http://omnifaces.org/ui"-->
+<!--      xmlns:p="primefaces">-->
+<!--    <ui:define name="content">-->
 
-        <o:form id="frm">
-            <p:growl id="growl" skipDetailIfEqualsSummary="true"  >
-                <p:autoUpdate/>
-            </p:growl>
-            <p:outputPanel  id="otpBuscaProduto">
-                <p:panel header="Buscar produto" rendered="#{produtoViewBean.rendBusca}" >
-                    <div class="ds-grid-container">
-                        <div class="ds-grid-item ds-col-2 ">
-                            <label>Status:</label>
-                            <p:selectOneRadio id="sorStatus" value="#{produtoViewBean.filtroProduto.status}" converter="omnifaces.SelectItemsConverter" required="false">
-                                <f:selectItems value="#{statusBean.listAll}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
-                            </p:selectOneRadio>
-                        </div>
-                        <div class="ds-grid-item ds-col-4 ">
-                            <label>Nome:</label>
-                            <p:inputText value="#{produtoViewBean.filtroProduto.nome}"/>
-                        </div>
-                    </div>
-                    <div class="ui-panel-content ui-widget-content ds-flex no-border">
-                        <div class="ds-p-r1">
-                            <p:commandButton value="Buscar" icon="pi pi-search" actionListener="#{produtoViewBean.control.buscar()}" update="frm:otpBuscaProduto frm:otpResultadoBusca"/>
-                        </div>
-                        <div class="ds-p-r1">
-                            <p:commandButton value="Cancelar" actionListener="#{produtoViewBean.cancelar()}" immediate="true" process="@this" update="frm:otpBuscaProduto" styleClass="ui-button-secondary" />
-                        </div>
-                    </div>
-                </p:panel>
-            </p:outputPanel>
+<!--        <o:form id="frm">-->
+<!--            <p:growl id="growl" skipDetailIfEqualsSummary="true"  >-->
+<!--                <p:autoUpdate/>-->
+<!--            </p:growl>-->
+<!--            <p:outputPanel  id="otpBuscaProduto">-->
+<!--                <p:panel header="Buscar produto" rendered="#{produtoViewBean.rendBusca}" >-->
+<!--                    <div class="ds-grid-container">-->
+<!--                        <div class="ds-grid-item ds-col-2 ">-->
+<!--                            <label>Status:</label>-->
+<!--                            <p:selectOneRadio id="sorStatus" value="#{produtoViewBean.filtroProduto.status}" converter="omnifaces.SelectItemsConverter" required="false">-->
+<!--                                <f:selectItems value="#{statusBean.listAll}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>-->
+<!--                            </p:selectOneRadio>-->
+<!--                        </div>-->
+<!--                        <div class="ds-grid-item ds-col-4 ">-->
+<!--                            <label>Nome:</label>-->
+<!--                            <p:inputText value="#{produtoViewBean.filtroProduto.nome}"/>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="ui-panel-content ui-widget-content ds-flex no-border">-->
+<!--                        <div class="ds-p-r1">-->
+<!--                            <p:commandButton value="Buscar" icon="pi pi-search" actionListener="#{produtoViewBean.control.buscar()}" update="frm:otpBuscaProduto frm:otpResultadoBusca"/>-->
+<!--                        </div>-->
+<!--                        <div class="ds-p-r1">-->
+<!--                            <p:commandButton value="Cancelar" actionListener="#{produtoViewBean.cancelar()}" immediate="true" process="@this" update="frm:otpBuscaProduto" styleClass="ui-button-secondary" />-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </p:panel>-->
+<!--            </p:outputPanel>-->
 
-            <p:outputPanel id="otpResultadoBusca" >
-                <p:panel header="Resultado da busca" rendered="#{produtoViewBean.rendResultadoBusca}">
-                    <p:dataTable var="prod" value="#{produtoViewBean.control}" paginator="true" rows="2" paginatorPosition="bottom"
-                                 paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
-                                 rowsPerPageTemplate="2,3,5" lazy="true">
-                        <p:column headerText="Nome">
-                            #{prod.nome}
-                        </p:column>
-                        <p:column headerText="Descrição">
-                            #{prod.descricaoCurta}
-                        </p:column>
-                        <p:column headerText="Descrição">
-                            <p:commandButton  icon="pi pi-arrow-circle-right" actionListener="#{produtoViewBean.toEditar(prod.idProduto)}" update="frm" immediate="true"/>
-<!--                            <p:linkButton icon="pi pi-arrow-circle-right" href="app/produto2/editar/#{prod.idProduto}" styleClass="rounded-button ui-button-flat" />-->
-                        </p:column>
-                    </p:dataTable>
-                </p:panel>
-            </p:outputPanel>
+<!--            <p:outputPanel id="otpResultadoBusca" >-->
+<!--                <p:panel header="Resultado da busca" rendered="#{produtoViewBean.rendResultadoBusca}">-->
+<!--                    <p:dataTable var="prod" value="#{produtoViewBean.control}" paginator="true" rows="2" paginatorPosition="bottom"-->
+<!--                                 paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"-->
+<!--                                 rowsPerPageTemplate="2,3,5" lazy="true">-->
+<!--                        <p:column headerText="Nome">-->
+<!--                            #{prod.nome}-->
+<!--                        </p:column>-->
+<!--                        <p:column headerText="Descrição">-->
+<!--                            #{prod.descricaoCurta}-->
+<!--                        </p:column>-->
+<!--                        <p:column headerText="Descrição">-->
+<!--                            <p:commandButton  icon="pi pi-arrow-circle-right" actionListener="#{produtoViewBean.toEditar(prod.idProduto)}" update="frm" immediate="true"/>-->
+<!--&lt;!&ndash;                            <p:linkButton icon="pi pi-arrow-circle-right" href="app/produto2/editar/#{prod.idProduto}" styleClass="rounded-button ui-button-flat" />&ndash;&gt;-->
+<!--                        </p:column>-->
+<!--                    </p:dataTable>-->
+<!--                </p:panel>-->
+<!--            </p:outputPanel>-->
 
-            <p:outputPanel id="otpFormProduto">
-                <p:panel rendered="#{produtoViewBean.rendFormProduto}">
-                    <p:tabView>
-                        <p:tab title="Gerais">
-                            <div class="ds-grid-container">
-                                <div class="ds-grid-item ds-col-6 ">
-                                    <label>Nome:</label>
-                                    <p:inputText value="#{produtoViewBean.produto.nome}"/>
-                                </div>
-                                <div class="ds-grid-item ds-col-3">
-                                    <label>Sku:</label>
-                                    <p:inputText value="#{produtoViewBean.produto.codSku}"/>
-                                </div>
-                                <div class="ds-grid-item ds-col-3">
-                                    <label>Modelo:</label>
-                                    <p:inputText value="#{produtoViewBean.produto.modelo}"/>
-                                </div>
-                                <div class="ds-grid-item ds-col-2 ">
-                                    <label>Status:</label>
-                                    <p:selectOneRadio id="sorStatus" value="#{produtoViewBean.produto.status}" converter="omnifaces.SelectItemsConverter" >
-                                        <f:selectItems value="#{statusBean.listAll}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
-                                    </p:selectOneRadio>
-                                </div>
+<!--            <p:outputPanel id="otpFormProduto">-->
+<!--                <p:panel rendered="#{produtoViewBean.rendFormProduto}">-->
+<!--                    <p:tabView>-->
+<!--                        <p:tab title="Gerais">-->
+<!--                            <div class="ds-grid-container">-->
+<!--                                <div class="ds-grid-item ds-col-6 ">-->
+<!--                                    <label>Nome:</label>-->
+<!--                                    <p:inputText value="#{produtoViewBean.produto.nome}"/>-->
+<!--                                </div>-->
+<!--                                <div class="ds-grid-item ds-col-3">-->
+<!--                                    <label>Sku:</label>-->
+<!--                                    <p:inputText value="#{produtoViewBean.produto.codSku}"/>-->
+<!--                                </div>-->
+<!--                                <div class="ds-grid-item ds-col-3">-->
+<!--                                    <label>Modelo:</label>-->
+<!--                                    <p:inputText value="#{produtoViewBean.produto.modelo}"/>-->
+<!--                                </div>-->
+<!--                                <div class="ds-grid-item ds-col-2 ">-->
+<!--                                    <label>Status:</label>-->
+<!--                                    <p:selectOneRadio id="sorStatus" value="#{produtoViewBean.produto.status}" converter="omnifaces.SelectItemsConverter" >-->
+<!--                                        <f:selectItems value="#{statusBean.listAll}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>-->
+<!--                                    </p:selectOneRadio>-->
+<!--                                </div>-->
 
 
 
-                                <div class="ds-grid-item ds-col-2 ">
-                                    <label>Código de barras:</label>
-                                    <p:inputNumber value="#{produtoViewBean.produto.codigoBarras}" />
-                                </div>
-                                <div class="ds-grid-item ds-col-12 ">
-                                    <label>Descrição Resumida:</label>
-                                    <p:textEditor widgetVar="editor1" value="#{produtoViewBean.produto.descricaoCurta}" height="100px"  />
-                                </div>
+<!--                                <div class="ds-grid-item ds-col-2 ">-->
+<!--                                    <label>Código de barras:</label>-->
+<!--                                    <p:inputNumber value="#{produtoViewBean.produto.codigoBarras}" />-->
+<!--                                </div>-->
+<!--                                <div class="ds-grid-item ds-col-12 ">-->
+<!--                                    <label>Descrição Resumida:</label>-->
+<!--                                    <p:textEditor widgetVar="editor1" value="#{produtoViewBean.produto.descricaoCurta}" height="100px"  />-->
+<!--                                </div>-->
 
-                                <div class="ds-grid-item ds-col-12 ">
-                                    <label>Descrição:</label>
-                                    <p:textEditor widgetVar="editor1" value="#{produtoViewBean.produto.descricaoLonga}" height="200px"  />
-                                </div>
-                            </div>
-                        </p:tab>
-                        <p:tab title="Classificação">
-                            <div class="ds-grid-container">
-                                <div class="ds-grid-item ds-col-3 ">
-                                    <label>Categoria:</label>
-                                    <p:autoComplete queryDelay="300" value="#{produtoViewBean.produto.categoria}" converter="#{modelConverter}"
-                                                    var="item" itemLabel="#{item.nome}" itemValue="#{item}" forceSelection="true"
-                                                    completeMethod="#{produtoViewBean.control.autoCompleteCategorias}"/>
-                                </div>
-                                <div class="ds-grid-item ds-col-3 ">
-                                    <label>Marca:</label>
-                                </div>
-                                <div class="ds-grid-item ds-col-3 ">
-                                    <label>Unidade de Venda(Saída):</label>
-                                    <p:selectOneMenu value="#{produtoViewBean.produto.unidadeVenda}" converter="#{modelConverter}">
-                                        <f:selectItems var="item" value="#{produtoViewBean.control.listTipoUnidade}" itemLabel="#{item.nome}" itemValue="#{item}" />
-                                    </p:selectOneMenu>
-                                </div>
-                                <div class="ds-grid-item ds-col-3 ">
-                                    <label>Unidade de Compra(Entrada):</label>
-                                    <p:selectOneMenu value="#{produtoViewBean.produto.unidadeCompra}" converter="#{modelConverter}">
-                                        <f:selectItems var="item" value="#{produtoViewBean.control.listTipoUnidade}" itemLabel="#{item.nome}" itemValue="#{item}" />
-                                    </p:selectOneMenu>
-                                </div>
-                                <div class="ds-grid-item ds-col-2 ">
-                                    <label>Marca:</label>
-                                </div>
-                                <div class="ds-grid-item ds-col-2 ">
-                                    <label>Tag:</label>
-                                </div>
-                            </div>
-                        </p:tab>
-                        <p:tab title="Financeiro">
-                            <div class="ds-grid-container">
-                                <div class="ds-grid-item ds-col-2 ">
-                                    <label>Valor de Venda Automatico:</label>
-                                </div>
-                                <div class="ds-grid-item ds-col-2 ">
-                                    <label>Preço de Venda:</label>
-                                </div>
-                                <div class="ds-grid-item ds-col-2 ">
-                                    <label>Permitir Desconto:</label>
-                                </div>
-                                <div class="ds-grid-item ds-col-2 ">
-                                    <label>Limite de desconto:</label>
-                                </div>
-                                <div class="ds-grid-item ds-col-2 ">
-                                    <label>Marca:</label>
-                                </div>
-                                <div class="ds-grid-item ds-col-2 ">
-                                    <label>Tag:</label>
-                                </div>
-                            </div>
-                        </p:tab>
-                        <p:tab title="Imagens">
-                            <p>Salve o produto antes de inseriri as imagens.</p>
-                            <div class="ds-grid-container">
-                                <div class="ds-grid-item ds-col-12 ">
-                                    <p:fileUpload id="upload" listener="#{produtoViewBean.control.handleFileUpload}"
-                                                  mode="advanced" multiple="true" label="Selecionar"
-                                                  accept=".jpg,.jpeg,.png"
-                                                  update="growl">
-                                        <p:validateFile sizeLimit="1000000" fileLimit="5" allowTypes="/(\.|\/)(png)$/"/>
-                                    </p:fileUpload>
-                                </div>
-                            </div>
-                        </p:tab>
-                    </p:tabView>
-                    <div class="ui-panel-content ui-widget-content ds-flex no-border">
-                        <div class="ds-p-r1">
-                            <p:commandButton value="Salvar" icon="pi pi-save" action="#{produtoViewBean.control.salvar}" update="frm"/>
-                        </div>
-                        <div class="ds-p-r1">
-                            <p:commandButton value="Cancelar" styleClass="ui-button-secondary" action="#{produtoViewBean.telaListarBusca()}" immediate="true" process="@this" update="frm"/>
-                        </div>
-                    </div>
-                </p:panel>
-            </p:outputPanel>
-        </o:form>
-    </ui:define>
-</ui:composition>
+<!--                                <div class="ds-grid-item ds-col-12 ">-->
+<!--                                    <label>Descrição:</label>-->
+<!--                                    <p:textEditor widgetVar="editor1" value="#{produtoViewBean.produto.descricaoLonga}" height="200px"  />-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </p:tab>-->
+<!--                        <p:tab title="Classificação">-->
+<!--                            <div class="ds-grid-container">-->
+<!--                                <div class="ds-grid-item ds-col-3 ">-->
+<!--                                    <label>Categoria:</label>-->
+<!--                                    <p:autoComplete queryDelay="300" value="#{produtoViewBean.produto.categoria}" converter="#{modelConverter}"-->
+<!--                                                    var="item" itemLabel="#{item.nome}" itemValue="#{item}" forceSelection="true"-->
+<!--                                                    completeMethod="#{produtoViewBean.control.autoCompleteCategorias}"/>-->
+<!--                                </div>-->
+<!--                                <div class="ds-grid-item ds-col-3 ">-->
+<!--                                    <label>Marca:</label>-->
+<!--                                </div>-->
+<!--                                <div class="ds-grid-item ds-col-3 ">-->
+<!--                                    <label>Unidade de Venda(Saída):</label>-->
+<!--                                    <p:selectOneMenu value="#{produtoViewBean.produto.unidadeVenda}" converter="#{modelConverter}">-->
+<!--                                        <f:selectItems var="item" value="#{produtoViewBean.control.listTipoUnidade}" itemLabel="#{item.nome}" itemValue="#{item}" />-->
+<!--                                    </p:selectOneMenu>-->
+<!--                                </div>-->
+<!--                                <div class="ds-grid-item ds-col-3 ">-->
+<!--                                    <label>Unidade de Compra(Entrada):</label>-->
+<!--                                    <p:selectOneMenu value="#{produtoViewBean.produto.unidadeCompra}" converter="#{modelConverter}">-->
+<!--                                        <f:selectItems var="item" value="#{produtoViewBean.control.listTipoUnidade}" itemLabel="#{item.nome}" itemValue="#{item}" />-->
+<!--                                    </p:selectOneMenu>-->
+<!--                                </div>-->
+<!--                                <div class="ds-grid-item ds-col-2 ">-->
+<!--                                    <label>Marca:</label>-->
+<!--                                </div>-->
+<!--                                <div class="ds-grid-item ds-col-2 ">-->
+<!--                                    <label>Tag:</label>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </p:tab>-->
+<!--                        <p:tab title="Financeiro">-->
+<!--                            <div class="ds-grid-container">-->
+<!--                                <div class="ds-grid-item ds-col-2 ">-->
+<!--                                    <label>Valor de Venda Automatico:</label>-->
+<!--                                </div>-->
+<!--                                <div class="ds-grid-item ds-col-2 ">-->
+<!--                                    <label>Preço de Venda:</label>-->
+<!--                                </div>-->
+<!--                                <div class="ds-grid-item ds-col-2 ">-->
+<!--                                    <label>Permitir Desconto:</label>-->
+<!--                                </div>-->
+<!--                                <div class="ds-grid-item ds-col-2 ">-->
+<!--                                    <label>Limite de desconto:</label>-->
+<!--                                </div>-->
+<!--                                <div class="ds-grid-item ds-col-2 ">-->
+<!--                                    <label>Marca:</label>-->
+<!--                                </div>-->
+<!--                                <div class="ds-grid-item ds-col-2 ">-->
+<!--                                    <label>Tag:</label>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </p:tab>-->
+<!--                        <p:tab title="Imagens">-->
+<!--                            <p>Salve o produto antes de inseriri as imagens.</p>-->
+<!--                            <div class="ds-grid-container">-->
+<!--                                <div class="ds-grid-item ds-col-12 ">-->
+<!--                                    <p:fileUpload id="upload" listener="#{produtoViewBean.control.handleFileUpload}"-->
+<!--                                                  mode="advanced" multiple="true" label="Selecionar"-->
+<!--                                                  accept=".jpg,.jpeg,.png"-->
+<!--                                                  update="growl">-->
+<!--                                        <p:validateFile sizeLimit="1000000" fileLimit="5" allowTypes="/(\.|\/)(png)$/"/>-->
+<!--                                    </p:fileUpload>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </p:tab>-->
+<!--                    </p:tabView>-->
+<!--                    <div class="ui-panel-content ui-widget-content ds-flex no-border">-->
+<!--                        <div class="ds-p-r1">-->
+<!--                            <p:commandButton value="Salvar" icon="pi pi-save" action="#{produtoViewBean.control.salvar}" update="frm"/>-->
+<!--                        </div>-->
+<!--                        <div class="ds-p-r1">-->
+<!--                            <p:commandButton value="Cancelar" styleClass="ui-button-secondary" action="#{produtoViewBean.telaListarBusca()}" immediate="true" process="@this" update="frm"/>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </p:panel>-->
+<!--            </p:outputPanel>-->
+<!--        </o:form>-->
+<!--    </ui:define>-->
+<!--</ui:composition>-->
