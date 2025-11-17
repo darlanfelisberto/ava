@@ -103,3 +103,14 @@ $color-nav:#fff;
     height: auto;
   }
 }
+
+
+.botoes-form {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}

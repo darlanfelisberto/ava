@@ -39,8 +39,8 @@ import { TooltipModule } from 'primeng/tooltip';
         </div>
 
         <div class="botoes-form">
-            <p-button (click)="adicionarPagina()" icon="pi pi-plus" pTooltip="Nova Página" tooltipPosition="left" type="button"></p-button>
-            <p-button type="submit" icon="pi pi-save" [disabled]="!questionarioForm.valid" pTooltip="Salvar Questionário" tooltipPosition="left"></p-button>
+          <p-button (click)="adicionarPagina()" icon="pi pi-plus" pTooltip="Nova Página" tooltipPosition="left" type="button"></p-button>
+          <p-button type="submit" icon="pi pi-save" [disabled]="!questionarioForm.valid" pTooltip="Salvar Questionário" tooltipPosition="left"></p-button>
         </div>
       </form>
     </div>
@@ -55,15 +55,6 @@ import { TooltipModule } from 'primeng/tooltip';
 
       .pages-section {
         margin-top: 2rem;
-      }
-      .botoes-form {
-        position: fixed;
-        bottom: 2rem;
-        right: 2rem;
-        z-index: 1000;
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
       }
     `
   ]
@@ -81,6 +72,8 @@ export class CadastroQuestionarioComponent implements OnInit {
       descricao: [''],
       paginas: this.fb.array([])
     });
+
+    this.adicionarPagina()
   }
 
   get paginas() {
