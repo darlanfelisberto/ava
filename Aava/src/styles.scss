@@ -2,6 +2,10 @@
 @use "tailwindcss";
 @import "primeicons/primeicons.css";
 
+$bg-color-nav:#252b3b;
+$bg-color-header:#fff;
+$color-nav:#fff;
+
 ::placeholder {
   color: #adb5bd;
   opacity: 1; /* Firefox */
@@ -41,3 +45,61 @@
   overflow-y: auto; /* Required if max-height is set to show scrollbar */
 }
 
+.ds-template {
+  display: grid;
+  height: 100vh; /* Faz o grid ocupar 100% da altura da tela */
+  grid-template-areas:
+    "logo header"
+    "menu content"
+  //"menu footer"
+;
+  grid-template-columns: 150px 1fr;
+  grid-template-rows: auto 1fr auto;
+}
+.ds-template > div {
+  //background-color: rgba(255, 255, 255, 0.8);
+  padding: 5px;
+}
+.ds-template > div.logo {
+  grid-area: logo;
+  text-align: center;
+  background-color: $bg-color-nav;
+  color: $color-nav;
+}
+.ds-template > div.header {
+  grid-area: header;
+  text-align: center;
+  background-color: $bg-color-header;
+  box-shadow: 0 .225rem .25rem rgba(51, 51, 51, .26);
+}
+.ds-template > div.menu {
+  grid-area: menu;
+  background-color: $bg-color-nav;
+  color: $color-nav;
+  box-shadow: 0 .325rem .55rem rgba(51, 51, 51, .36);
+}
+.ds-template > div.content {
+  grid-area: content;
+}
+.ds-template > div.footer {
+  grid-area: footer;
+}
+@media (max-width: 768px) {
+  .ds-template{
+    /* Muda para um layout de UMA ÚNICA coluna */
+    grid-template-columns: 1fr;
+
+    /* Redefine as áreas para empilhar verticalmente */
+    /*TODO ajustar logo, menu e header para ocupar a mesma linha e menu ser um botao*/
+    grid-template-areas:
+            "header"
+            "logo"
+            "menu"
+            "content"
+            "footer";
+
+    /* Deixa a altura das linhas ser automática */
+    grid-template-rows: auto;
+    height: auto;
+  }
+}
