@@ -46,11 +46,10 @@ import {InputTextModule} from 'primeng/inputtext';
       <p-button (click)="abrirDialogNovo()" icon="pi pi-plus" pTooltip="Novo Questionario" tooltipPosition="left" type="button"></p-button>
     </div>
 
-    <p-dialog header="Novo Questionário" [(visible)]="exibirDialog" [modal]="true" [style]="{width: '50vw'}"
-              (onHide)="fecharDialog()">
+    <p-dialog header="Novo Questionário" [(visible)]="exibirDialog" [modal]="true" [style]="{width: '50vw'}" (onHide)="fecharDialog()">
       <form [formGroup]="form" (ngSubmit)="salvarQuestionario()" class="p-fluid">
         <div class="p-field">
-          <label for="descricao">Descrição</label>
+          <label for="descricao">Descrição: </label>
           <input id="descricao" type="text" pInputText formControlName="descricao"/>
           <small *ngIf="form.get('descricao')?.invalid && form.get('descricao')?.touched" class="p-error">
             Descrição é obrigatória.
