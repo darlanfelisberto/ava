@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { QuestionarioDTO } from '../model';
-import { RouterLink } from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import { QuestionarioService } from '../services/questionario.service';
 import { CommonModule } from '@angular/common';
 import {TableModule} from 'primeng/table';
@@ -10,11 +10,15 @@ import {Tooltip} from 'primeng/tooltip';
 import {DialogModule} from 'primeng/dialog';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {InputTextModule} from 'primeng/inputtext';
+import {ValidacaoInputComponent} from '../componentes/validacao-input.component';
+import {ConfirmationService, MessageService} from 'primeng/api';
+import {ConfirmPopup} from 'primeng/confirmpopup';
 
 @Component({
   selector: 'app-meus-questionarios',
   standalone: true,
-  imports: [RouterLink, CommonModule, TableModule, Button, Tooltip, DialogModule, ReactiveFormsModule, InputTextModule],
+  imports: [RouterLink, CommonModule, TableModule, Button, Tooltip, DialogModule, ReactiveFormsModule, InputTextModule, ValidacaoInputComponent, ConfirmPopup],
+  providers: [ConfirmationService, MessageService],
   template: `
     <style>
       .p-fluid .p-field { margin-bottom: 1rem; }
@@ -26,13 +30,14 @@ import {InputTextModule} from 'primeng/inputtext';
       <ng-template pTemplate="header">
         <tr>
           <th>ID</th>
+          <th>Nome</th>
           <th>Descrição</th>
-          <th></th>
         </tr>
       </ng-template>
       <ng-template #body let-questionario>
         <tr>
           <td>{{ questionario.idQuestionario }}</td>
+          <td>{{ questionario.nome }}</td>
           <td>{{ questionario.descricao }}</td>
           <td>
             <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" routerLink="/questionario/{{questionario.idQuestionario}}" />
@@ -41,28 +46,44 @@ import {InputTextModule} from 'primeng/inputtext';
       </ng-template>
     </p-table>
 
+    <div class="grid grid-cols-1 md:grid-cols-3 ">
+      <div class=" ">01 01 01 01 01 01 01 01 01 01 </div>
+      <div class=" ">02 02 02 02 02 02 02 02 02 02 02 </div>
+      <div class="">03 03 03 03 03 03 03 03 03 03 03 </div>
+      <div class=" ">04 04 04 04 04 04 04 04 04 04 04 04 </div>
+
+    </div>
 
     <div class="botoes-form">
       <p-button (click)="abrirDialogNovo()" icon="pi pi-plus" pTooltip="Novo Questionario" tooltipPosition="left" type="button"></p-button>
     </div>
 
     <p-dialog header="Novo Questionário" [(visible)]="exibirDialog" [modal]="true" [style]="{width: '50vw'}" (onHide)="fecharDialog()">
-      <form [formGroup]="form" (ngSubmit)="salvarQuestionario()" class="p-fluid">
-        <div class="p-field">
-          <label for="descricao">Descrição: </label>
-          <input id="descricao" type="text" pInputText formControlName="descricao"/>
-          <small *ngIf="form.get('descricao')?.invalid && form.get('descricao')?.touched" class="p-error">
-            Descrição é obrigatória.
-          </small>
-        </div>
 
+      <form [formGroup]="form"  >
+        <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
+          <div class="flex flex-col">
+            <label class="w-full">Nome: </label>
+            <input type="text" formControlName="nome"  pInputText class="required-input"/>
+            <app-validacao-input [control]="form.get('nome')" nomeDoCampo="Nome"></app-validacao-input>
+          </div>
+
+          <div class="flex flex-col">
+            <label>Descrição:</label>
+            <textarea
+              placeholder="Descrição do Questionário"
+              formControlName="descricao"
+              rows="1"
+            ></textarea>
+          </div>
+        </div>
         <div class="p-dialog-footer" style="margin-top: 1rem; text-align: right">
           <p-button label="Cancelar" icon="pi pi-times" styleClass="p-button-text" (click)="fecharDialog()"></p-button>
-          <p-button label="Salvar" icon="pi pi-check" type="submit" [disabled]="form.invalid"></p-button>
+          <p-button label="Salvar" icon="pi pi-check" (click)="confirmarSalvar($event)"  [disabled]="form.invalid"></p-button>
         </div>
       </form>
     </p-dialog>
-
+    <p-confirmpopup />
   `,
   styles: [`
     /* Estilos existentes */
@@ -94,13 +115,15 @@ export class MeusQuestionariosComponent implements OnInit, OnDestroy {
   form: FormGroup;
 
   private questionarioService = inject(QuestionarioService);
+  private confirmationService: ConfirmationService = inject(ConfirmationService);
   private fb = inject(FormBuilder);
-  private destroy$ = new Subject<void>();
+  router: Router = inject(Router);
 
   constructor() {
     this.form = this.fb.group({
       idQuestionario: [null],
-      descricao: ['', [Validators.required, Validators.minLength(3)]]
+      nome: ['', [Validators.required, Validators.minLength(3)]],
+      descricao: ['']
     });
   }
 
@@ -109,8 +132,6 @@ export class MeusQuestionariosComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   carregarQuestionarios(): void {
@@ -126,13 +147,38 @@ export class MeusQuestionariosComponent implements OnInit, OnDestroy {
     this.exibirDialog = false;
   }
 
+  confirmarSalvar( event: Event){
+    console.log(event);
+    this.confirmationService.confirm({
+      target: event.currentTarget as EventTarget,
+      message: 'Você tem certeza?',
+      icon: 'pi pi-question',
+      rejectButtonProps: {
+        label: 'Cancel',
+        severity: 'secondary',
+        outlined: true
+      },
+      acceptButtonProps: {
+        label: 'Save'
+      },
+      accept: () => {
+        this.salvarQuestionario()
+        console.log('Confirmed');
+        // this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 3000 });
+      },
+      reject: () => {
+        console.log('Rejected');
+        // this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
+      }
+    });
+  }
+
   salvarQuestionario(): void {
     if (this.form.invalid) {
       return;
     }
 
     this.questionarioService.create(this.form.value)
-      .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.carregarQuestionarios(); // Recarrega a lista
         this.fecharDialog();

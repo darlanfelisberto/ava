@@ -2,7 +2,8 @@ package br.com.feliva.erp.model.questionarios.dto;
 
 import br.com.feliva.erp.model.questionarios.Questao;
 import br.com.feliva.erp.model.questionarios.Questionario;
-import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,8 @@ import java.util.UUID;
 public class QuestionarioDTO {
 
     public UUID idQuestionario;
+
+    public String nome;
 
     public String descricao;
 

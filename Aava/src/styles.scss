@@ -19,7 +19,7 @@ $color-nav:#fff;
   color: red;
 }
 
-.title-input.ng-invalid.ng-touched, .desc-input.ng-invalid.ng-touched {
+.required-input.ng-invalid.ng-touched, .title-input.ng-invalid.ng-touched, .desc-input.ng-invalid.ng-touched {
   border-bottom-color: red;
 }
 
