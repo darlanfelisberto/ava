@@ -48,7 +48,7 @@ public class QuestionarioEnd {
 
             Map<String, String> success = new HashMap<>();
             success.put("message", "Questionario salvo com sucesso");
-            success.put("id", questionario.getIdQuestionario().toString());
+            success.put("idQuestionario", questionario.getIdQuestionario().toString());
             return Response.ok(success).build();
         } catch (Exception e) {
             e.printStackTrace();

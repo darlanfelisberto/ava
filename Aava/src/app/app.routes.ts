@@ -8,7 +8,7 @@ import {MeusQuestionariosComponent} from './cadastro/MeusQuestionarios.component
 
 export const routes: Routes = [
     {
-      path: 'questionario/cadastro',
+      path: 'questionario/editar/:id',
       component: CadastroQuestionarioComponent,
       // canActivate: [authGuard]
     },

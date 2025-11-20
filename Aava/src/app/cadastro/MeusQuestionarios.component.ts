@@ -179,9 +179,22 @@ export class MeusQuestionariosComponent implements OnInit, OnDestroy {
     }
 
     this.questionarioService.create(this.form.value)
-      .subscribe(() => {
-        this.carregarQuestionarios(); // Recarrega a lista
+    .subscribe({
+      next: (response) => {
+        console.log(response)
+        if (response.idQuestionario) {
+
+          this.router.navigate(['/questionario/editar/', response.idQuestionario]);
+        } else {
+          this.carregarQuestionarios(); // Recarrega a lista
+          console.error('ID do questionário não retornado na resposta.');
+        }
         this.fecharDialog();
-      });
+      },
+      error: (err) => {
+        console.error('Erro ao salvar o questionário:', err);
+        // TODO: Implementar um serviço de mensagens para exibir o erro ao usuário.
+      }
+    });
   }
 }
