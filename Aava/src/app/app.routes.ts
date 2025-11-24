@@ -2,19 +2,19 @@ import { Routes } from '@angular/router';
 import { QuestionarioComponent } from './componentes/questionario.component';
 import { QuestionariosComponent } from './componentes/questionarios.component';
 import { authGuard } from './auth.guard';
-import {NovoQuestionarioComponent} from './componentes/novo-questionario.component';
 import { CadastroQuestionarioComponent } from './cadastro/cadastro-questionario.component';
+import { EditarQuestionarioComponent } from './cadastro/editar-questionario.component';
 import {MeusQuestionariosComponent} from './cadastro/MeusQuestionarios.component';
 
 export const routes: Routes = [
     {
       path: 'questionario/editar/:id',
-      component: CadastroQuestionarioComponent,
+      component: EditarQuestionarioComponent,
       // canActivate: [authGuard]
     },
     {
       path: 'questionario/novo',
-      component: NovoQuestionarioComponent,
+      component: CadastroQuestionarioComponent,
       // canActivate: [authGuard]
     },
     {
