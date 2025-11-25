@@ -40,7 +40,7 @@ import {ConfirmPopup} from 'primeng/confirmpopup';
           <td>{{ questionario.nome }}</td>
           <td>{{ questionario.descricao }}</td>
           <td>
-            <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" routerLink="/questionario/{{questionario.idQuestionario}}" />
+            <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" routerLink="/questionario/editar/{{questionario.idQuestionario}}" />
           </td>
         </tr>
       </ng-template>
