@@ -16,8 +16,9 @@ public class Questionario extends Model<UUID> {
     @Column(name = "id_questionario")
     private UUID idQuestionario;
 
-    @Column(length = 200)
     private String descricao;
+
+    private String nome;
 
     @OneToMany(mappedBy = "questionario", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Questao> listaQuestao;
@@ -47,4 +48,11 @@ public class Questionario extends Model<UUID> {
         return listaQuestao;
     }
 
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
 }

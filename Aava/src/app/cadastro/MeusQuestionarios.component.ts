@@ -13,16 +13,23 @@ import {InputTextModule} from 'primeng/inputtext';
 import {ValidacaoInputComponent} from '../componentes/validacao-input.component';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {ConfirmPopup} from 'primeng/confirmpopup';
+import {Toast, ToastItem} from 'primeng/toast';
+import {AppMessagesService} from '../services/appMessages.service';
+import {Editor} from 'primeng/editor';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+
 
 @Component({
   selector: 'app-meus-questionarios',
   standalone: true,
-  imports: [RouterLink, CommonModule, TableModule, Button, Tooltip, DialogModule, ReactiveFormsModule, InputTextModule, ValidacaoInputComponent, ConfirmPopup],
-  providers: [ConfirmationService, MessageService],
+  imports: [RouterLink, CommonModule, TableModule, Button, Tooltip, DialogModule, ReactiveFormsModule, InputTextModule, ValidacaoInputComponent, ConfirmPopup, Toast, Editor],
+  providers: [ConfirmationService, AppMessagesService],
   template: `
     <style>
       .p-fluid .p-field { margin-bottom: 1rem; }
     </style>
+
+    <p-toast />
 
     <h2>Minhas provas/questionários</h2>
 
@@ -70,6 +77,7 @@ import {ConfirmPopup} from 'primeng/confirmpopup';
 
           <div class="flex flex-col">
             <label>Descrição:</label>
+            <p-editor formControlName="descricao" [style]="{ height: '320px' }" />
             <textarea
               placeholder="Descrição do Questionário"
               formControlName="descricao"
@@ -116,6 +124,7 @@ export class MeusQuestionariosComponent implements OnInit, OnDestroy {
 
   private questionarioService = inject(QuestionarioService);
   private confirmationService: ConfirmationService = inject(ConfirmationService);
+  private appMessageService: AppMessagesService = inject(AppMessagesService);
   private fb = inject(FormBuilder);
   router: Router = inject(Router);
 
@@ -163,12 +172,9 @@ export class MeusQuestionariosComponent implements OnInit, OnDestroy {
       },
       accept: () => {
         this.salvarQuestionario()
-        console.log('Confirmed');
-        // this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 3000 });
       },
       reject: () => {
-        console.log('Rejected');
-        // this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
+        // console.log('Rejected');
       }
     });
   }
@@ -183,7 +189,7 @@ export class MeusQuestionariosComponent implements OnInit, OnDestroy {
       next: (response) => {
         console.log(response)
         if (response.idQuestionario) {
-
+          this.appMessageService.success("Questionario salvo com sucesso!")
           this.router.navigate(['/questionario/editar/', response.idQuestionario]);
         } else {
           this.carregarQuestionarios(); // Recarrega a lista

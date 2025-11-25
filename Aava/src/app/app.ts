@@ -1,11 +1,12 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import {Toast} from 'primeng/toast';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, Toast],
   template: `
-
+    <p-toast></p-toast>
     <div class="ds-template">
       <div class="logo">logo</div>
       <div class="header"><h2>My Header</h2></div>

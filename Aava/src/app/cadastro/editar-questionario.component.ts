@@ -9,11 +9,14 @@ import { ValidacaoInputComponent } from '../componentes/validacao-input.componen
 import { CadastroPaginaComponent } from './cadastro-pagina.component';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
+import {AppMessagesService} from '../services/appMessages.service';
+import {Toast} from 'primeng/toast';
+import {SafeHtmlPipe} from '../services/SafeHtmlPipe';
 
 @Component({
   selector: 'app-editar-questionario',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ValidacaoInputComponent, CadastroPaginaComponent, ButtonModule, TooltipModule],
+  imports: [CommonModule, ReactiveFormsModule, ValidacaoInputComponent, CadastroPaginaComponent, ButtonModule, TooltipModule, SafeHtmlPipe],
   template: `
     <div class="container">
       <form [formGroup]="questionarioForm" (ngSubmit)="onSubmit()">
@@ -25,12 +28,8 @@ import { TooltipModule } from 'primeng/tooltip';
         />
         <app-validacao-input [control]="questionarioForm.get('nome')" nomeDoCampo="Nome do Questionário"></app-validacao-input>
 
-        <textarea
-          class="desc-input"
-          placeholder="Descrição do Questionário"
-          formControlName="descricao"
-          rows="1"
-        ></textarea>
+        <div [innerHTML]="questionarioForm.get('descricao')?.value | safeHtml" >
+        </div>
 
         <div class="pages-section" formArrayName="paginas">
           @for (pagina of paginaControls; track pagina; let i = $index) {
@@ -61,8 +60,9 @@ import { TooltipModule } from 'primeng/tooltip';
 })
 export class EditarQuestionarioComponent implements OnInit {
   questionarioForm!: FormGroup;
-  questionarioId!: number;
+  questionarioId!: string;
 
+  private appMessageService: AppMessagesService = inject(AppMessagesService);
   private fb = inject(FormBuilder);
   private questionarioService = inject(QuestionarioService);
   private router = inject(Router);
@@ -77,10 +77,46 @@ export class EditarQuestionarioComponent implements OnInit {
     });
 
     if (this.questionarioId) {
-      // TODO: Carregar dados do questionário
+      this.questionarioService.getById(this.questionarioId).subscribe({
+        next:(questionario) => {
+          this.setQuestionario(questionario);
+        },
+        error: (err) => {
+          console.log(err);
+          this.appMessageService.error("Questionário não encontrado!");
+        }
+      });
     } else {
-      this.adicionarPagina()
+
     }
+  }
+
+  setQuestionario(questionario: QuestionarioDTO): void {
+    this.questionarioForm.patchValue({
+      nome: questionario.nome,
+      descricao: questionario.descricao
+    });
+
+    questionario.paginas?.forEach(pagina => {
+      const paginaForm = this.fb.group({
+        nome: [pagina.nome, Validators.required],
+        descricao: [pagina.descricao, Validators.required],
+        questoes: this.fb.array([])
+      });
+
+      const questoesForm = paginaForm.get('questoes') as FormArray;
+      pagina?.questoes?.forEach(questao => {
+        questoesForm.push(this.fb.group({
+          // id: [questao.id],
+          // ordem: [questao.ordem, Validators.required],
+          // tipo: [questao.tipo, Validators.required],
+          // obrigatoria: [questao.obrigatoria, Validators.required],
+          // enunciado: [questao.enunciado, Validators.required],
+          // opcoes: this.fb.array(questao.opcoes ? questao.opcoes.map(op => this.fb.group({ id: [op.id], texto: [op.texto, Validators.required] })) : [])
+        }));
+      });
+      this.paginas.push(paginaForm);
+    });
   }
 
   get paginas() {

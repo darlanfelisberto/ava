@@ -28,8 +28,13 @@ export const routes: Routes = [
         // canActivate: [authGuard]
     },
     {
+      path: 'meus',
+      component: MeusQuestionariosComponent,
+      // canActivate: [authGuard]
+    },
+    {
       path: '',
       component: MeusQuestionariosComponent,
       // canActivate: [authGuard]
-    }
+    },
 ];

@@ -2,8 +2,7 @@ package br.com.feliva.erp.model.questionarios.dto;
 
 import br.com.feliva.erp.model.questionarios.Questao;
 import br.com.feliva.erp.model.questionarios.Questionario;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import br.com.feliva.util.HtmlSanitizer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +18,17 @@ public class QuestionarioDTO {
 
     public List<QuestaoDTO> listaQuestao;
 
-    public QuestionarioDTO inicialize(Questionario q){
+    public QuestionarioDTO copyFrom(Questionario q){
         this.idQuestionario = q.getIdQuestionario();
         this.descricao = q.getDescricao();
+        this.nome = q.getNome();
         return this;
+    }
+
+    public void copyFor(Questionario q){
+        q.setIdQuestionario(this.idQuestionario);
+        q.setDescricao(HtmlSanitizer.sanitizeHtml(this.descricao,true,true,true,true,true));
+        q.setNome(this.nome);
     }
 
     public QuestionarioDTO inicializeQuestoes(List<Questao> lista){
@@ -36,7 +42,7 @@ public class QuestionarioDTO {
     public static List<QuestionarioDTO> fromList(List<Questionario> lista){
         var l = new ArrayList<QuestionarioDTO>();
         lista.forEach(item ->{
-            l.add(new QuestionarioDTO().inicialize(item));
+            l.add(new QuestionarioDTO().copyFrom(item));
         });
 
         return l;

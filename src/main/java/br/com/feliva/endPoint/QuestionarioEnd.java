@@ -5,6 +5,7 @@ import br.com.feliva.erp.model.questionarios.Questionario;
 import br.com.feliva.erp.model.questionarios.dto.QuestionarioDTO;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.NoResultException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import jakarta.ws.rs.*;
@@ -35,7 +36,7 @@ public class QuestionarioEnd {
 
         try {
             Questionario questionario = new Questionario();
-            questionarioDTO.inicialize(questionario);
+            questionarioDTO.copyFor(questionario);
 
             Set<ConstraintViolation<Questionario>> violations = validator.validate(questionario);
             if (!violations.isEmpty()) {
@@ -65,13 +66,12 @@ public class QuestionarioEnd {
         try {
             var q = this.questionarioDAO.findById(UUID.fromString(id));
             var dto = new QuestionarioDTO()
-                    .inicialize(q)
+                    .copyFrom(q)
                     .inicializeQuestoes(q.getListaQuestao());
             return Response.ok(dto).build();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (NoResultException e) {
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
-        return Response.ok().build();
     }
 
     @GET

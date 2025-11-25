@@ -14,13 +14,14 @@ import java.util.UUID;
 public class QuestionarioDAO extends InjectEntityManagerDAO<Questionario> {
 
     public Questionario findById(UUID id){
-        try {
+//        try {
             return (Questionario) this.em.createQuery("select q from Questionario q where q.idQuestionario = :id")
                     .setParameter("id",id)
                     .getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
+            //manter lançamento de exeção
+//        } catch (NoResultException e) {
+//            return null;
+//        }
     }
 
     @Transactional

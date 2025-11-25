@@ -8,10 +8,14 @@ import { AuthService } from './auth.service';
 import { DefaultOAuthInterceptor, OAuthStorage, provideOAuthClient } from 'angular-oauth2-oidc';
 import {providePrimeNG} from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
+import {MessageService} from 'primeng/api';
+import {AppMessagesService} from './services/appMessages.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     // provideZoneChangeDetection({ eventCoalescing: true }),
+    AppMessagesService,
+    MessageService,
     provideRouter(routes),
     provideAnimationsAsync(),
     providePrimeNG({
