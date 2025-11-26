@@ -38,14 +38,12 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
         <tr>
           <th>ID</th>
           <th>Nome</th>
-          <th>Descrição</th>
         </tr>
       </ng-template>
       <ng-template #body let-questionario>
         <tr>
           <td>{{ questionario.idQuestionario }}</td>
           <td>{{ questionario.nome }}</td>
-          <td>{{ questionario.descricao }}</td>
           <td>
             <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" routerLink="/questionario/editar/{{questionario.idQuestionario}}" />
           </td>

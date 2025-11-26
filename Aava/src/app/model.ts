@@ -2,16 +2,15 @@ export interface QuestionarioDTO{
     idQuestionario?: string;
     nome?: string;
     descricao?: string;
-    paginas?: PaginaDTO[];
-    listaQuestao?: QuestaoDTO[];
+    listaPaginas?: PaginaDTO[];
+    // listaQuestao?: QuestaoDTO[];
     respostaQuestionario?:RespostaQuestionarioDTO;
 }
 
 export interface PaginaDTO {
     idPagina?: string;
-    nome?: string;
-    descricao?: string;
-    questoes?: QuestaoDTO[];
+    titulo?: string;
+    listaQuestoes?: QuestaoDTO[];
 }
 
 export interface QuestaoDTO{
@@ -19,7 +18,7 @@ export interface QuestaoDTO{
     tipoQuestao?: TipoQuestao;
     descricao?: string;
     resposta: string[];
-    listaAlternativa?: AlternativaDTO[];
+    listaAlternativas?: AlternativaDTO[];
 }
 
 export interface AlternativaDTO{

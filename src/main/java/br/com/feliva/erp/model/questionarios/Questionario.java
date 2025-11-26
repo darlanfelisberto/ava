@@ -21,8 +21,8 @@ public class Questionario extends Model<UUID> {
 
     private String nome;
 
-    @OneToMany(mappedBy = "questionario", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    List<Questao> listaQuestao;
+    @OneToMany(mappedBy = "questionario", fetch = FetchType.LAZY)
+    List<Pagina> listPaginas;
 
     @Override
     public UUID getMMId() {
@@ -45,8 +45,12 @@ public class Questionario extends Model<UUID> {
         this.descricao = descricao;
     }
 
-    public List<Questao> getListaQuestao() {
-        return listaQuestao;
+    public List<Pagina> getListPaginas() {
+        return listPaginas;
+    }
+
+    public void setListPaginas(List<Pagina> listPaginas) {
+        this.listPaginas = listPaginas;
     }
 
     public String getNome() {

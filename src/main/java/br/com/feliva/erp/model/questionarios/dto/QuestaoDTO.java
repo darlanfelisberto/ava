@@ -21,13 +21,13 @@ public class QuestaoDTO {
 
     public String descricao;
 
-    public List<Alternativa> listaAlternativa;
+    public List<Alternativa> listaAlternativas;
 
     public QuestaoDTO inicialize(Questao q){
         idQuestao = q.getIdQuestao();
         descricao = q.getDescricao();
         tipoQuestao = q.getTipoQuestao().getCod();
-        listaAlternativa = q.getListaAlternativa();
+        listaAlternativas = q.getListaAlternativa();
         return this;
     }
 

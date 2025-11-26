@@ -16,12 +16,13 @@ public class QuestionarioDTO {
 
     public String descricao;
 
-    public List<QuestaoDTO> listaQuestao;
+    public List<PaginaDTO> listaPaginas;
 
     public QuestionarioDTO copyFrom(Questionario q){
         this.idQuestionario = q.getIdQuestionario();
         this.descricao = q.getDescricao();
         this.nome = q.getNome();
+        this.listaPaginas = PaginaDTO.fromList(q.getListPaginas());
         return this;
     }
 
@@ -31,15 +32,17 @@ public class QuestionarioDTO {
         q.setNome(this.nome);
     }
 
-    public QuestionarioDTO inicializeQuestoes(List<Questao> lista){
-        this.listaQuestao = new ArrayList<>();
-        lista.forEach( item -> {
-            this.listaQuestao.add(new QuestaoDTO().inicialize(item));
-        });
-        return this;
-    }
+//    public QuestionarioDTO inicializeQuestoes(List<Questao> lista){
+//        this.listaQuestao = new ArrayList<>();
+//        lista.forEach( item -> {
+//            this.listaQuestao.add(new QuestaoDTO().inicialize(item));
+//        });
+//        return this;
+//    }
 
     public static List<QuestionarioDTO> fromList(List<Questionario> lista){
+        if(lista == null) return null;
+
         var l = new ArrayList<QuestionarioDTO>();
         lista.forEach(item ->{
             l.add(new QuestionarioDTO().copyFrom(item));

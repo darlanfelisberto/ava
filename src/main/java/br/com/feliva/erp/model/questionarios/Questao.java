@@ -17,8 +17,8 @@ public class Questao extends Model<UUID> {
     private UUID idQuestao;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_questionario")
-    private Questionario questionario;
+    @JoinColumn(name = "id_pagina")
+    private Pagina pagina;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_tipo_questao")
@@ -44,12 +44,12 @@ public class Questao extends Model<UUID> {
     }
 
     @JsonIgnore
-    public Questionario getQuestionario() {
-        return questionario;
+    public Pagina getPagina() {
+        return pagina;
     }
 
-    public void setQuestionario(Questionario questionario) {
-        this.questionario = questionario;
+    public void setPagina(Pagina pagina) {
+        this.pagina = pagina;
     }
 
     public String getDescricao() {

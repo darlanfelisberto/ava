@@ -13,11 +13,25 @@ import java.util.UUID;
 @RequestScoped
 public class QuestionarioDAO extends InjectEntityManagerDAO<Questionario> {
 
+    @Transactional
     public Questionario findById(UUID id){
 //        try {
-            return (Questionario) this.em.createQuery("select q from Questionario q where q.idQuestionario = :id")
+        this.em.createQuery("""
+                    select p from Pagina p
+                    left join fetch p.listQuestoes
+                    left join fetch p.questionario q
+                    where q.idQuestionario = :id
+                    """)
                     .setParameter("id",id)
                     .getSingleResult();
+
+        return (Questionario) this.em.createQuery("""
+                    select q from Questionario q 
+                    left join fetch q.listPaginas p
+                    where q.idQuestionario = :id
+                    """)
+                .setParameter("id",id)
+                .getSingleResult();
             //manter lançamento de exeção
 //        } catch (NoResultException e) {
 //            return null;

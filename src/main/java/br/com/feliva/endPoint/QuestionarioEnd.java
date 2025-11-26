@@ -67,7 +67,8 @@ public class QuestionarioEnd {
             var q = this.questionarioDAO.findById(UUID.fromString(id));
             var dto = new QuestionarioDTO()
                     .copyFrom(q)
-                    .inicializeQuestoes(q.getListaQuestao());
+//                    .inicializeQuestoes(q.getListaQuestao())
+                    ;
             return Response.ok(dto).build();
         } catch (NoResultException e) {
             return Response.status(Response.Status.NOT_FOUND).build();

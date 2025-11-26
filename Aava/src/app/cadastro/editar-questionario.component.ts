@@ -97,15 +97,14 @@ export class EditarQuestionarioComponent implements OnInit {
       descricao: questionario.descricao
     });
 
-    questionario.paginas?.forEach(pagina => {
+    questionario.listaPaginas?.forEach(pagina => {
       const paginaForm = this.fb.group({
-        nome: [pagina.nome, Validators.required],
-        descricao: [pagina.descricao, Validators.required],
+        titulo: [pagina.titulo, Validators.required],
         questoes: this.fb.array([])
       });
 
       const questoesForm = paginaForm.get('questoes') as FormArray;
-      pagina?.questoes?.forEach(questao => {
+      pagina?.listaQuestoes?.forEach(questao => {
         questoesForm.push(this.fb.group({
           // id: [questao.id],
           // ordem: [questao.ordem, Validators.required],
