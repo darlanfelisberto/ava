@@ -16,6 +16,7 @@ public class Questionario extends Model<UUID> {
     @Column(name = "id_questionario")
     private UUID idQuestionario;
 
+    @Column(columnDefinition="text")
     private String descricao;
 
     private String nome;
