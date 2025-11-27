@@ -8,7 +8,7 @@ import {AlternativaComponent} from './alternativa.component';
   standalone: true,
   imports: [CommonModule, AlternativaComponent],
   template: `
-    @if (questao && questao.listaAlternativa) {
+    @if (questao && questao.listaAlternativas) {
       <h3>{{ questao.descricao }}</h3>
         <app-alternativa [questao]="questao"
           [nomeMesclar]="questao.tipoQuestao === TipoQuestao.mult"

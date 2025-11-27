@@ -12,18 +12,18 @@ import { forkJoin } from 'rxjs';
   standalone: true,
   imports: [CommonModule, QuestaoComponent],
   template: `
-    @if (questionario) {
-      <h2>{{ questionario.descricao }}</h2>
+<!--    @if (questionario) {-->
+<!--      <h2>{{ questionario.descricao }}</h2>-->
 
-      @for (questao of questionario.listaQuestao; track questao.idQuestao) {
-        <app-questao
-          [questao]="questao"
-          [respostaQuestao]="getRespostaParaQuestao(questao.idQuestao)"
-          (respostaQuestaoChange)="onRespostaQuestaoChange($event)">
-        </app-questao>
-      }
-      <button (click)="submitAnswers()">Enviar Respostas</button>
-    }
+<!--      @for (questao of questionario.listaPaginas; track questao.idQuestao) {-->
+<!--        <app-questao-->
+<!--          [questao]="questao"-->
+<!--          [respostaQuestao]="getRespostaParaQuestao(questao.idQuestao)"-->
+<!--          (respostaQuestaoChange)="onRespostaQuestaoChange($event)">-->
+<!--        </app-questao>-->
+<!--      }-->
+<!--      <button (click)="submitAnswers()">Enviar Respostas</button>-->
+<!--    }-->
   `,
   styles: [`
     div {

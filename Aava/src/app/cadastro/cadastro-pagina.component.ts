@@ -28,15 +28,9 @@ import { ValidacaoInputComponent } from '../componentes/validacao-input.componen
             type="text"
             class="title-input text-2xl font-medium"
             placeholder="Nome da Página"
-            formControlName="nome"
+            formControlName="titulo"
           />
-          <textarea
-            class="desc-input"
-            placeholder="Descrição da Página"
-            formControlName="descricao"
-            rows="1"
-          ></textarea>
-          <div class="mt-1" formArrayName="questoes">
+          <div class="mt-1" formArrayName="listaQuestoes">
             @for (questao of questaoControls; track questao; let i = $index) {
               <app-cadastro-questao [questaoFormGroup]="questao" [pageIndex]="pageIndex" [questionIndex]="i" [totalPreviousQuestions]="totalPreviousQuestions" (removerQuestao)="removerQuestao(i)"></app-cadastro-questao>
             }
@@ -108,18 +102,18 @@ export class CadastroPaginaComponent {
   private fb = inject(FormBuilder);
 
   get questoes() {
-    return this.paginaFormGroup.get('questoes') as FormArray;
+    return this.paginaFormGroup.get('listaQuestoes') as FormArray;
   }
 
   get questaoControls() {
-    return (this.paginaFormGroup.get('questoes') as FormArray).controls as FormGroup[];
+    return (this.paginaFormGroup.get('listaQuestoes') as FormArray).controls as FormGroup[];
   }
 
   adicionarQuestao(): void {
     const questaoForm = this.fb.group({
       descricao: ['', Validators.required],
       tipoQuestao: [''],
-      listaAlternativa: this.fb.array([])
+      listaAlternativas: this.fb.array([])
     });
     this.questoes.push(questaoForm);
     questaoForm.markAllAsTouched();

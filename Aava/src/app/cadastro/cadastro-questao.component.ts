@@ -48,11 +48,11 @@ import { ValidacaoInputComponent } from '../componentes/validacao-input.componen
                 <app-alternativa-desc></app-alternativa-desc>
               }
               @case (TipoQuestao.unic) {
-                <app-alternativa-escolha [alternativasArray]="alternativas"
+                <app-alternativa-escolha [alternativasArray]="listaAlternativas"
                                          [tipo]="TipoQuestao.unic"></app-alternativa-escolha>
               }
               @case (TipoQuestao.mult) {
-                <app-alternativa-escolha [alternativasArray]="alternativas"
+                <app-alternativa-escolha [alternativasArray]="listaAlternativas"
                                          [tipo]="TipoQuestao.mult"></app-alternativa-escolha>
               }
             }
@@ -118,15 +118,15 @@ export class CadastroQuestaoComponent {
 
   TipoQuestao = TipoQuestao;
 
-  get alternativas() {
-    return this.questaoFormGroup.get('listaAlternativa') as FormArray;
+  get listaAlternativas() {
+    return this.questaoFormGroup.get('listaAlternativas') as FormArray;
   }
 
   onTipoQuestaoChange() {
-    this.alternativas.clear();
+    this.listaAlternativas.clear();
     const tipo = this.questaoFormGroup.get('tipoQuestao')?.value;
     if (tipo === TipoQuestao.unic || tipo === TipoQuestao.mult) {
-      this.alternativas.push(this.fb.group({ descricao: ['', Validators.required] }));
+      this.listaAlternativas.push(this.fb.group({ descricao: ['', Validators.required] }));
     }
   }
 }

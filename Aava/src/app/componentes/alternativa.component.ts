@@ -8,7 +8,7 @@ import {AlternativaDTO, QuestaoDTO, RespostaQuestaoDTO, TipoQuestao} from '../mo
   imports: [CommonModule],
   template: `
 
-    @for (alternativa of questao?.listaAlternativa; track alternativa.idAlternativa) {
+    @for (alternativa of questao?.listaAlternativas; track alternativa.idAlternativa) {
       <div>
         <input
           [type]="questao?.tipoQuestao === TipoQuestao.mult ? 'checkbox' : 'radio'"

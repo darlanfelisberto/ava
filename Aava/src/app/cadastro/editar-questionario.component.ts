@@ -31,7 +31,7 @@ import {SafeHtmlPipe} from '../services/SafeHtmlPipe';
         <div [innerHTML]="questionarioForm.get('descricao')?.value | safeHtml" >
         </div>
 
-        <div class="pages-section" formArrayName="paginas">
+        <div class="pages-section" formArrayName="listaPaginas">
           @for (pagina of paginaControls; track pagina; let i = $index) {
             <app-cadastro-pagina [paginaFormGroup]="pagina" [pageIndex]="i" [totalPreviousQuestions]="getTotalPreviousQuestions(i)" (removerPagina)="removerPagina(i)"></app-cadastro-pagina>
           }
@@ -73,7 +73,7 @@ export class EditarQuestionarioComponent implements OnInit {
     this.questionarioForm = this.fb.group({
       nome: ['', Validators.required],
       descricao: [''],
-      paginas: this.fb.array([])
+      listaPaginas: this.fb.array([])
     });
 
     if (this.questionarioId) {
@@ -99,31 +99,30 @@ export class EditarQuestionarioComponent implements OnInit {
 
     questionario.listaPaginas?.forEach(pagina => {
       const paginaForm = this.fb.group({
+        idPagina:[''],
         titulo: [pagina.titulo, Validators.required],
-        questoes: this.fb.array([])
+        listaQuestoes: this.fb.array([])
       });
 
-      const questoesForm = paginaForm.get('questoes') as FormArray;
+      const questoesForm = paginaForm.get('listaQuestoes') as FormArray;
       pagina?.listaQuestoes?.forEach(questao => {
         questoesForm.push(this.fb.group({
-          // id: [questao.id],
-          // ordem: [questao.ordem, Validators.required],
-          // tipo: [questao.tipo, Validators.required],
-          // obrigatoria: [questao.obrigatoria, Validators.required],
-          // enunciado: [questao.enunciado, Validators.required],
-          // opcoes: this.fb.array(questao.opcoes ? questao.opcoes.map(op => this.fb.group({ id: [op.id], texto: [op.texto, Validators.required] })) : [])
+          idQuestao: [questao.idQuestao],
+          descricao: [questao.descricao, Validators.required],
+          tipoQuestao: [questao.tipoQuestao, Validators.required],
+          listaAlternativas: this.fb.array([])
         }));
       });
-      this.paginas.push(paginaForm);
+      this.listaPaginas.push(paginaForm);
     });
   }
 
-  get paginas() {
-    return this.questionarioForm.get('paginas') as FormArray;
+  get listaPaginas() {
+    return this.questionarioForm.get('listaPaginas') as FormArray;
   }
 
   get paginaControls() {
-    return (this.questionarioForm.get('paginas') as FormArray).controls as FormGroup[];
+    return (this.questionarioForm.get('listaPaginas') as FormArray).controls as FormGroup[];
   }
 
   onSubmit(): void {
@@ -141,18 +140,18 @@ export class EditarQuestionarioComponent implements OnInit {
       descricao: ['', Validators.required],
       questoes: this.fb.array([])
     });
-    this.paginas.push(paginaForm);
+    this.listaPaginas.push(paginaForm);
     paginaForm.markAllAsTouched();
   }
 
   removerPagina(index: number): void {
-    this.paginas.removeAt(index);
+    this.listaPaginas.removeAt(index);
   }
 
   getTotalPreviousQuestions(pageIndex: number): number {
     let total = 0;
     for (let i = 0; i < pageIndex; i++) {
-      const page = this.paginas.at(i) as FormGroup;
+      const page = this.listaPaginas.at(i) as FormGroup;
       total += (page.get('questoes') as FormArray).length;
     }
     return total;

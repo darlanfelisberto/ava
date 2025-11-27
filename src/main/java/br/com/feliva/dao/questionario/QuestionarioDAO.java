@@ -15,19 +15,19 @@ public class QuestionarioDAO extends InjectEntityManagerDAO<Questionario> {
 
     @Transactional
     public Questionario findById(UUID id){
-//        try {
-        this.em.createQuery("""
+        try {
+            this.em.createQuery("""
                     select p from Pagina p
                     left join fetch p.listQuestoes
                     left join fetch p.questionario q
                     where q.idQuestionario = :id
                     """)
                     .setParameter("id",id)
-                    .getSingleResult();
-
+                    .getResultList();
+        } catch (NoResultException e) {}
         return (Questionario) this.em.createQuery("""
                     select q from Questionario q 
-                    left join fetch q.listPaginas p
+                    left join q.listPaginas p
                     where q.idQuestionario = :id
                     """)
                 .setParameter("id",id)
